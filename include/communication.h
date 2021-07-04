@@ -58,18 +58,10 @@ namespace comms {
         document["bar_alt"] = bar.altitude;
         document["vert_vel"] = bar.vert_velocity; //*NEW
 
-        //*NEW should test
         // COUNTER
         document["counter"] = counter;
 
         // @todo Should also send time since lauch
-
-        // if(g.current_rocket_state == ROCKET_STATE::PREPERATION)
-        // {
-        //     document["yaw"] = g.yaw;
-        //     document["pitch"] = g.pitch;
-        //     document["roll"] = g.roll;
-        // }
         
         char buffer[256]; //TODO check if with new data buffer size large enough
         

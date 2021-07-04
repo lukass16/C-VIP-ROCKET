@@ -2,8 +2,6 @@
 #include <LoRa.h>
 #include <SPI.h>
 
-
-
 // https://randomnerdtutorials.com/ttgo-lora32-sx1276-arduino-ide/
 // https://github.com/sandeepmistry/arduino-LoRa/blob/master/examples/LoRaDuplex/LoRaDuplex.ino
 
@@ -68,21 +66,16 @@ namespace lora {
         LoRa.beginPacket();                   // start packet
         LoRa.write(_destination);             // add destination address
         LoRa.write(_localAddress);            // add sender address
-        LoRa.write(lora_message_id);   // add message ID
+        LoRa.write(lora_message_id);          // add message ID
         LoRa.write(outgoing.length());        // add payload length
         LoRa.print(outgoing);                 // add payload
         LoRa.endPacket();                     // finish packet and send it
     }
 
-    //*NEW
-
     int getPacketRssi()
     {
         return LoRa.packetRssi();
     }
-
-     //*NEW
-
 
 
     void onReceive(int packetSize) {
@@ -124,26 +117,26 @@ namespace lora {
         Serial.println();
     }
 
-    void runTestCode() {
-        uint choice = random(4);
+    void test() {
         String msg = "";
-        switch (choice)
+        for(int i = 0; i < 4; i++)
         {
-        case 1:
-            msg = "Pirmā ziņa no loras!";
-            break;
-            case 2:
-            msg = "Otra ziņa no loras!";
-            break;
-            case 3:
-            msg = "Trešā ziņa no loras!";
-            break;
-        
-        default:
-            msg = "Defaultā ziņa no loras!";
+            switch (i)
+            {
+                case 1:
+                    msg = "First LoRa message";
+                    break;
+                case 2:
+                    msg = "Second LoRa message";
+                    break;
+                case 3:
+                    msg = "Third LoRa message";
+                    break;
+                default:
+                    msg = "Default LoRa message";
+            }
         }
-
-        Serial.println("Nosūtam ziņu: " + msg);
+        Serial.println("Sending message: " + msg);
         sendMessage(msg, 0);
     }
 

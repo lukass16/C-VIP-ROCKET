@@ -4,8 +4,6 @@
 #include "sensor_data.h"
 #include "EEPROM.h"
 
-//TODO izchekot kas notiek ar gps - kaa saglabat vecas
-
 
 namespace gps {
 
@@ -17,9 +15,8 @@ namespace gps {
 
     boolean hasData = false;
 
-    //*NEW
     sens_data::GpsData lastData;  //Last data so that values of zero don't get sent when gps doesn't have lock on
-    //*NEW
+
 
     void setup(uint gpsRate = 9600)
     {
@@ -57,7 +54,6 @@ namespace gps {
         return gps.altitude.meters();
     }
 
-    //*NEW
 
     int getSatellites()
     {
@@ -115,15 +111,11 @@ namespace gps {
     }
 
 
-    //*NEW
-   
-
     sens_data::GpsData getGpsState()
     {
         sens_data::GpsData gd;
         if(gps.location.isValid())
         {
-            //*NEW
             //adding last good values
             lastData.lat = lastLatitude();
             lastData.lng = lastLongitude();
@@ -132,12 +124,11 @@ namespace gps {
             gd.lng = lastLongitude();
             gd.alt = lastAltitude();
             return gd;
-            //*NEW
         }
         else
         {
             return lastData;
-        }
-        
+        } 
     }
+    
 }

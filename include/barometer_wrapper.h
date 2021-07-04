@@ -67,20 +67,4 @@ namespace barometer {
         Serial.println();
     }
 
-    void printData() {
-        Serial.print(F("Temperature = "));
-        Serial.print(bmp.readTemperature());
-        Serial.println(" *C");
-
-        Serial.print(F("Pressure = "));
-        Serial.print(bmp.readPressure()/100); //displaying the Pressure in hPa, you can change the unit
-        Serial.println(" hPa");
-
-        Serial.print(F("Approx altitude = "));
-        Serial.print(bmp.readAltitude(SEA_LEVEL)); //The "1019.66" is the pressure(hPa) at sea level in my place
-        Serial.println(" m");                    //If you don't know it, modify it until you get your current altitude
-
-        Serial.println();
-        delay(2000);
-    }
 }

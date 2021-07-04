@@ -34,7 +34,6 @@ namespace arming
 
     bool fail = 0;
     bool AlreadyCalibrated = 0;
-    int magValue = 0; //Testa mainīgais, ko sūtam uz EEPROM
     int USBir = 0;
 
     void setup()
