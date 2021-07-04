@@ -4,10 +4,6 @@
 
 #define EEPROM_SIZE 255
 
-/*
-end nomainits uz fail, lai arming::fail butu saprotamaks koda
-*/
-
 namespace arming
 {
     bool isEnabled = 0;
@@ -58,7 +54,7 @@ namespace arming
         //sak timeri
         timer = timerBegin(0, 80, true);
         timerAttachInterrupt(timer, &onTimer, true);
-        timerAlarmWrite(timer, 5000000, false); //5sek - safety
+        timerAlarmWrite(timer, 5000000, false); //! 5sek - safety Note: code goes through all sensor initializations and calibration while timer is going, should create seperate timer start function
         timerAlarmEnable(timer);
 
         //EEPROM setup

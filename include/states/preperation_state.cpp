@@ -16,20 +16,8 @@ class PreperationState: public State {
         void start () override {
             Serial.println("proof of concept --- PREP STATE");
 
-            arming::setup(); //*NEW - beginning
-            //! is this needed?
-            EEPROM.begin(255); //*NEW 
+            arming::setup();
             Wire.begin(12, 13);
-
-
-            //* NEW - transition to USB test state (Changed location so as to check if USB connected before going to flight state if launch has been previously detected)
-            //!Doesn't work anymore
-            // if(arming::isConnectedUSB())
-            // {
-            //     this->_context->TransitionTo(new TestState);
-            //     this->_context->Start();
-            // }
-            //!
 
             if(magnetometer::hasBeenLaunch())
             {
@@ -37,7 +25,6 @@ class PreperationState: public State {
                 this->_context->Start();
             }
 
-            
             buzzer::setup();
             buzzer::test();
             gps::setup(9600);            
@@ -46,10 +33,9 @@ class PreperationState: public State {
             comms::setup(868E6);
             
 
-            magnetometer::calibrate(magnetometer::savedCorToEEPROM());   //*changed loc, skips if saved calibration values
-            // magnetometer::testCalibratedAxis();
+            magnetometer::calibrate(magnetometer::savedCorToEEPROM());
 
-            //*Checks second switch with safety against fast pull
+            //! Checks second switch with safety against fast pull
             while(!arming::armingSuccess())
             {
                 if(arming::checkSecondSwitch() && arming::timeKeeper && arming::fail == 0)
@@ -60,7 +46,7 @@ class PreperationState: public State {
                 else if (arming::checkSecondSwitch() && !arming::timeKeeper)
                 {                                                                   
                     arming::fail = 1;                                                          
-                    Serial.println("CALIBRATION FAILED"); 
+                    Serial.println("CALIBRATION FAILED, AFFIRMED TOO FAST"); 
                 }   
             }
             magnetometer::getCorEEPROM();
@@ -76,10 +62,7 @@ class PreperationState: public State {
                 }
             }
            
-           //* NEW end
-        
-           // this->_context->RequestNextPhase();
-           // this->_context->Start();
+
         }
 
         void HandleNextPhase() override {

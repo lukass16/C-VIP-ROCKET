@@ -45,7 +45,7 @@ public:
         Serial.println("proof of concept --- FLIGHT STATE");
 
 
-        //!A problem is that if launch was detected previously the rocket goes straight to arming and setting apogee timers 
+        //!Ther is danger that if launch was detected previously the rocket goes straight to arming and setting apogee timers 
         //!so if launch is detected and during testing the launchDetected EEPROM value is not changed it could lead to an inadvertent triggering of the mechanism
 
         if(magnetometer::hasBeenLaunch())
@@ -101,7 +101,6 @@ public:
         }
 
         Serial.println("APOGEE DETECTED !!!");
-        // lora::sendMessage("APOGEE DETECTED !!!");
 
         this->_context->RequestNextPhase();
         this->_context->Start();

@@ -9,42 +9,52 @@
 #include "gps_wrapper.h"
 #include "barometer_wrapper.h"
 
-class DescentState: public State {
-    private:
-        int showMessage = 1;
+class DescentState : public State
+{
+private:
+    int showMessage = 1;
 
-    public: 
-        void start () override {
-            String msg = "proof of concept --- DESCENT STATE";
-            Serial.println(msg);
-            lora::sendMessage(msg, 777);
+public:
+    void start() override
+    {
+        String msg = "proof of concept --- DESCENT STATE";
+        Serial.println(msg);
 
-            buzzer::buzz(0);
+        buzzer::buzz(0); //why?
 
-            while (true)
+        while (true)
+        {
+
+            // GPS
+            gps::readGps();
+            if (gps::hasData)
             {
-
-                gps::readGps();
-                barometer::readSensor();
-                
-                if(gps::hasData) {
-                   sens_data::GpsData gd = gps::getGpsState();
-                   s_data.setGpsData(gd);
-                }
-
-                magnetometer::readMagnetometer();
-                
-                Serial.println("Looping in descent state!");
-
-                //TODO add flash
-
+                sens_data::GpsData gd = gps::getGpsState();
+                s_data.setGpsData(gd);
             }
-        }
 
-        void HandleNextPhase() override {
-            if(showMessage) {
-                Serial.println("proof of concept --- END of proof of concept");
-            }
-            showMessage = 0;
+            // MAGNETOMETER
+            magnetometer::readMagnetometer();
+            sens_data::MagenetometerData md = magnetometer::getMagnetometerState();
+            s_data.setMagnetometerData(md);
+
+            // BAROMETER
+            barometer::readSensor(); // This is only to display data
+            sens_data::BarometerData bd = barometer::getBarometerState();
+            s_data.setBarometerData(bd);
+
+            Serial.println("Looping in descent state!");
+
+            //TODO add flash
         }
+    }
+
+    void HandleNextPhase() override
+    {
+        if (showMessage)
+        {
+            Serial.println("proof of concept --- END of proof of concept");
+        }
+        showMessage = 0;
+    }
 };
