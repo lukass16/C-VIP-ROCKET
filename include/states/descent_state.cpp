@@ -17,7 +17,7 @@ private:
 public:
     void start() override
     {
-        String msg = "proof of concept --- DESCENT STATE";
+        String msg = "Entering DESCENT STATE";
         Serial.println(msg);
 
         buzzer::buzz(0); //why?

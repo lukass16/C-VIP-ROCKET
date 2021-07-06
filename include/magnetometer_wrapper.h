@@ -422,7 +422,7 @@ namespace magnetometer
         scale_y = avg_delta / avg_delta_y;
         scale_z = avg_delta / avg_delta_z;
 
-        Serial.println("Calibrate... END !!!");
+        Serial.println("Calibration fisnished!");
     }
 
     void displayData()

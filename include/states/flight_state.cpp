@@ -42,10 +42,10 @@ public:
 
     void start() override
     {
-        Serial.println("proof of concept --- FLIGHT STATE");
+        Serial.println("Warning! Entering FLIGHT STATE!");
 
 
-        //!Ther is danger that if launch was detected previously the rocket goes straight to arming and setting apogee timers 
+        //!There is danger that if launch was detected previously the rocket goes straight to arming and setting apogee timers 
         //!so if launch is detected and during testing the launchDetected EEPROM value is not changed it could lead to an inadvertent triggering of the mechanism
 
         if(magnetometer::hasBeenLaunch())

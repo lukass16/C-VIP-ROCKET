@@ -9,7 +9,7 @@
 #include "flight_state.cpp"
 #include "test_state.cpp"
 #include "arming.h"
-#include "EEPROM.h" //*NEW
+#include "EEPROM.h" 
 
 class PreperationState: public State {
     public: 

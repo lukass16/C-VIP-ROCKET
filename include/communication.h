@@ -12,8 +12,9 @@ namespace comms {
 
     void setup(double frequency = 868E6) {
         lora::setup(frequency);
-
+        Serial.println("LoRa initialized!");
         s_thread::setup(loop);
+        
     }
 
     // This is ran in a seperate thread
