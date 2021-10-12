@@ -20,16 +20,16 @@ public:
         String msg = "proof of concept --- DESCENT STATE";
         Serial.println(msg);
 
-        buzzer::buzz(0); //why?
-
         while (true)
         {
+            buzzer::signalDescent();
 
             // GPS
             gps::readGps();
+            sens_data::GpsData gd;
             if (gps::hasData)
             {
-                sens_data::GpsData gd = gps::getGpsState();
+                gd = gps::getGpsState();
                 s_data.setGpsData(gd);
             }
 
@@ -39,13 +39,10 @@ public:
             s_data.setMagnetometerData(md);
 
             // BAROMETER
-            barometer::readSensor(); // This is only to display data
             sens_data::BarometerData bd = barometer::getBarometerState();
             s_data.setBarometerData(bd);
 
             Serial.println("Looping in descent state!");
-
-            //TODO add flash
         }
     }
 
