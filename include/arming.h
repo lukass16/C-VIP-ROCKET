@@ -25,8 +25,8 @@ namespace arming
     int ParachuteBattery2 = 35; //p17 INPUT
 
     int USBcheck = 37;     //p14 INPUT
-    int SecondSwitch = 39; //p16 INPUT
-    int ThirdSwitch = 38;  //p15 INPUT
+    int SecondSwitch = 38; //p16 INPUT //!previously was 39
+    int ThirdSwitch = 39;  //p15 INPUT //!previously was 38 (Changed from testing with Arvids)
 
     const int ParachutePower = 0; //!JADEFINĒ!
     const int LopyPower = 0;      //!JĀDEFINĒ!
