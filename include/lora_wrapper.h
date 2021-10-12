@@ -20,12 +20,9 @@ namespace lora {
 
     byte _localAddress = 0xFF; // address of this device
     byte _destination = 0xFF;  // destination to send to
-    long lastSendTime = 0;     // last send time
-    int interval = 2000;       // interval between sends
     boolean _canPrintHeaderMessage = false;
 
     void sendMessage(String outgoing, int lora_message_id);
-    void onReceive(int packetSize);
 
     void setup(double frequency = 868E6, boolean canPrintHeaderMessage = false)
     {

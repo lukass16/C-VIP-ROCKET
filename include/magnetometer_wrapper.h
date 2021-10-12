@@ -6,10 +6,8 @@
 #include "sensor_data.h"
 #include "EEPROM.h"
 
-//TODO add EEPROM with savedEEPROM() function
-
-namespace magnetometer
-{
+namespace magnetometer {
+    
     // an MPU9250 object with the MPU-9250 sensor on I2C bus 0 with address 0x68
     MPU9250 IMU(Wire, 0x68);
     int status;
@@ -54,13 +52,14 @@ namespace magnetometer
     float scale_z = 6;
 
     // declaring variables for corrected x y z values
-    float cor_x;
-    float cor_y;
+    float cor_x = 99;
+    float cor_y = 99;
     float cor_z = 99;
 
-    //* TIMER FUNCTIONALITY
+    // declaring variables for current accelerometer x y z values in the loop
+    float acc_x = 0, acc_y = 0, acc_z = 0;
+
     //creating variables for timer and launch
-    unsigned long periodOfAcc = 0, lastTime = 0, detAccDur = 40; //detAccDur in milliseconds (/?)
     float detAcc = 0;
     int countAcc = 0;
 
@@ -85,44 +84,23 @@ namespace magnetometer
 
     bool launch()
     {
-        if (IMU.getAccelY_mss() > detAcc) //-20
+        if (IMU.getAccelY_mss() > detAcc)
         {
             countAcc++;
         }
         if (countAcc > 50)
         {
             Serial.println("Writing to EEPROM that launch detected");
-            EEPROM.writeFloat(36, 1); //*Adding that launch is detected
-            //for testing
-            countAcc = 0;
+            EEPROM.writeFloat(36, 1); //Adding that launch is detected
             return 1;
         }
         return 0;
     }
 
-    //*Legacy launch() function - undecided yet as to which will be chosen
-    // bool launch()
-    // {
-    //     if (IMU.getAccelZ_mss() > detAcc) //-20
-    //     {
-    //         lastTime = millis();
-    //     }
-    //     periodOfAcc = millis() - lastTime;
-    //     Serial.print("Period of acceleration: ");
-    //     Serial.println(periodOfAcc);
-    //     if (periodOfAcc > detAccDur)
-    //     {
-    //         Serial.println("Writing to EEPROM that launch detected");
-    //         EEPROM.writeFloat(36, 1);
-    //         return 1;
-    //     }
-    //     return 0;
-    // }
-
     void startApogeeTimer(int timerLength)
     {
         //initializing timer - setting the number of the timer, the value of the prescaler and stating that the counter should count up (true)
-        timer = timerBegin(0, 80, true); //?Is there a possibilty of an error if the same timer is used many times for different applications?
+        timer = timerBegin(0, 80, true);
 
         //binding the timer to a handling function
         timerAttachInterrupt(timer, &onTimer, true);
@@ -133,7 +111,7 @@ namespace magnetometer
         //enabling the timer
         timerAlarmEnable(timer);
 
-        Serial.println("TIMER ENABLED");
+        Serial.println("Timer enabled");
     }
 
     bool timerDetectApogee()
@@ -147,11 +125,6 @@ namespace magnetometer
             return 0;
         }
     }
-    //*TIMER FUNCTIONALITY END
-
-    //*ACCELEROMETER FUNCTIONALITY
-    // declaring variables for current accelerometer x y z values in the loop
-    float acc_x = 0, acc_y = 0, acc_z = 0;
 
     float getAccX()
     {
@@ -190,9 +163,7 @@ namespace magnetometer
     {
         return IMU.calibrateAccel();
     }
-    //*ACCELEROMETER FUNCTIONALITY END
 
-    //*EEPROM FUNCTIONALITY
     void saveCorToEEPROM()
     {
         //Trying to add the offset and scale factor values to EEPROM
@@ -256,7 +227,6 @@ namespace magnetometer
         EEPROM.commit();
     }
 
-    //TODO test
     bool hasBeenLaunch()
     {
         if (EEPROM.readFloat(36) == 1)
@@ -286,13 +256,37 @@ namespace magnetometer
         Serial.print("scale_z ");
         Serial.println(scale_z);
     }
-    //*EEPROM FUNCTIONALITY END
 
     void getMagValues()
     {
         cor_x = (IMU.getMagX_uT() - offset_x) * scale_x;
         cor_y = (IMU.getMagY_uT() - offset_y) * scale_y;
         cor_z = (IMU.getMagZ_uT() - offset_z) * scale_z;
+    }
+
+    void setup()
+    {
+        status = IMU.begin();
+        if (status < 0)
+        {
+            Serial.println("IMU initialization unsuccessful");
+            Serial.println("Check IMU wiring or try cycling power");
+            Serial.print("Status: ");
+            Serial.println(status);
+            while (true)
+                ;
+        }
+
+        Serial.println("Magnetometer ready");
+    }
+
+    boolean isApogee(float field_val = cor_y)
+    {
+        return field_val <= 10;
+    }
+
+    double getAngle() {
+        return atan(sqrt(pow(IMU.getAccelX_mss(), 2) + pow(IMU.getAccelZ_mss(), 2) ) / IMU.getAccelY_mss())*57.2958;
     }
 
     void printCalibratingValues()
@@ -312,31 +306,6 @@ namespace magnetometer
         Serial.println(minz);
     }
 
-    void setup()
-    {
-        status = IMU.begin();
-        if (status < 0)
-        {
-            Serial.println("IMU initialization unsuccessful");
-            Serial.println("Check IMU wiring or try cycling power");
-            Serial.print("Status: ");
-            Serial.println(status);
-            while (true)
-                ;
-        }
-
-        Serial.println("Magnetometer ready!");
-    }
-
-    boolean isApogee(float field_val = cor_y)
-    {
-        return field_val <= 10;
-    }
-
-    double getAngle() {
-        return atan(sqrt(pow(IMU.getAccelX_mss(), 2) + pow(IMU.getAccelZ_mss(), 2) ) / IMU.getAccelY_mss())*57.2958;
-    }
-
     void calibrate(boolean skip = false)
     {
 
@@ -346,7 +315,7 @@ namespace magnetometer
             return;
         }
 
-        Serial.println("Calibrate... NOW...");
+        Serial.println("Calibrating magnetometer");
 
         //finding max and min values in all of the axes
         //assigning start time for the loop
@@ -400,24 +369,13 @@ namespace magnetometer
                 time_up_to_change = time_in_loop;
             }
 
-            // // Output the data
             printCalibratingValues();
 
             //updating the time interval since last change of value
             interval_since_change = time_in_loop - time_up_to_change;
 
             Serial.println(interval_since_change);
-            //Serial.println("Calibrate... END !!!");
         }
-
-        //signaling the completion of calibration using the piezo
-        // buzzer::buzz(200);
-        // delay(500);
-        // buzzer::buzz(500);
-        // delay(500);
-        // buzzer::buzz(800);
-        // delay(500);
-        // buzzer::buzz(200);
 
         //getting offset values
         offset_x = (maxx + minx) / 2;
@@ -436,7 +394,7 @@ namespace magnetometer
         scale_y = avg_delta / avg_delta_y;
         scale_z = avg_delta / avg_delta_z;
 
-        Serial.println("Calibrate... END !!!");
+        Serial.println("Calibration END !!!");
     }
 
     void displayData()
@@ -461,13 +419,13 @@ namespace magnetometer
 
     void processApogee()
     {
-        if (isApogee(cor_z))
+        if (isApogee(cor_y))
         {
-            buzzer::buzz(125);
+            buzzer::buzz(3400);
         }
         else
         {
-            buzzer::buzz(0); //*Could this perhaps be incorect?
+            buzzer::buzzEnd();
         }
     }
 
@@ -478,30 +436,8 @@ namespace magnetometer
 
         getMagValues();
         getAccelValues();
-        // displayData();
+        //displayData();
         //processApogee();
-    }
-
-    void testCalibratedAxis(boolean isForced = false) //*Should change
-    {
-        int i = 0;
-        while (i <= 100 || isForced)
-        {
-            readMagnetometer();
-
-            if (!isApogee())
-            {
-
-                Serial.println("waiting...");
-            }
-            else
-            {
-                i++;
-                Serial.println("APOGEE !!!");
-                printCalibratingValues();
-            }
-        }
-        buzzer::buzz(0);
     }
 
 }

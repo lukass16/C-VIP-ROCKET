@@ -14,7 +14,7 @@
 class PreperationState: public State {
     public: 
         void start () override {
-            Serial.println("proof of concept --- PREP STATE");
+            Serial.println("PREP STATE");
             buzzer::signalStart();
 
             arming::setup();
@@ -37,8 +37,6 @@ class PreperationState: public State {
                 this->_context->Start();
             }
 
-            //TODO if magnetometer already calibrated still waiting to retrieve values - sets new
-
             if(!magnetometer::savedCorToEEPROM())
             {
                 buzzer::signalCalibrationStart();
@@ -53,7 +51,7 @@ class PreperationState: public State {
             }
 
             arming::secondSwitchStart = millis();
-            while(!arming::armingSuccess())
+            while(!arming::armingSuccess() && !magnetometer::savedCorToEEPROM())
             {
                 if(!arming::checkFirstSwitch() && !arming::firstSwitchHasBeen)
                 {
@@ -65,7 +63,7 @@ class PreperationState: public State {
                 if(arming::checkSecondSwitch() && !arming::timeKeeper)
                 {                                                                   
                     arming::fail = 1;                                                          
-                    Serial.println("CALIBRATION FAILED, AFFIRMED TOO FAST"); 
+                    Serial.println("Calibration failed, affirmed too fast!"); 
                 } 
                 else if(arming::checkSecondSwitch() && arming::checkThirdSwitch()) //ja ir izvilkts slēdzis 
                 {
@@ -75,20 +73,19 @@ class PreperationState: public State {
                         arming::AlreadyCalibrated = 1;
                         magnetometer::saveCorToEEPROM();
                         magnetometer::setAsCalibrated();
-                        Serial.println("EEPROM CALIBRATION VALUES SAVED");
+                        Serial.println("EEPROM calibration values saved");
                         buzzer::signalSavedValues();
                     } 
                 }
                 else
                 {
-                    //Serial.println("Nav sledzis");
                     arming::secondSwitchStart = millis(); //resetto izvilkšanas sākuma laiku uz pašreizējo laiku
                 }
                 magnetometer::getCorEEPROM();
                 magnetometer::displayCor();
             }
 
-            //* permanent loop while not successfull arming or not pulled third switch
+            //permanent loop while not pulled third switch
             while(!arming::checkSecondSwitch() || arming::checkThirdSwitch()) {}
             this->_context->RequestNextPhase();
             this->_context->Start();

@@ -17,7 +17,6 @@ namespace gps {
 
     sens_data::GpsData lastData;  //Last data so that values of zero don't get sent when gps doesn't have lock on
 
-
     void setup(uint gpsRate = 9600)
     {
         gpsSerial.begin(gpsRate, ssc, RXPIN, TXPIN);
@@ -43,7 +42,7 @@ namespace gps {
     }
 
     double lastLatitude() {
-        return gps.location.lat();  //TODO ar 6 skaitljiem?
+        return gps.location.lat(); 
     }
 
     double lastLongitude() {
@@ -53,7 +52,6 @@ namespace gps {
     double lastAltitude() {
         return gps.altitude.meters();
     }
-
 
     int getSatellites()
     {
@@ -79,7 +77,7 @@ namespace gps {
     {
         Serial.println("Writing Second to EEPROM");
         float second = (float) getSecond();
-        Serial.print("Second!!!!!!:     ");
+        Serial.print("Second: ");
         Serial.println(second);
         EEPROM.writeFloat(28, second);
         EEPROM.commit();
@@ -87,9 +85,9 @@ namespace gps {
 
     void writeMinuteEEPROM()
     {
-        Serial.println("Writing Second to EEPROM");
+        Serial.println("Writing Minute to EEPROM");
         float minute = (float) getMinute();
-        Serial.print("Minute!!!!!!:     ");
+        Serial.print("Minute: ");
         Serial.println(minute);
         EEPROM.writeFloat(32, minute);
         EEPROM.commit();
@@ -109,7 +107,6 @@ namespace gps {
     {
         return ((currentSecond + (currentMinute - getMinuteEEPROM()) * 60) - getSecondEEPROM()); //TODO test
     }
-
 
     sens_data::GpsData getGpsState()
     {

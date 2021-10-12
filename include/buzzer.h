@@ -24,6 +24,11 @@ namespace buzzer
         Serial.println("Buzzer ready!");
     }
 
+    void setPiezoPin(u_int piezo_pin)
+    {
+        buzzer::piezo_pin = piezo_pin;
+    }
+
     void buzz(uint freq = freq)
     {
         ledcWriteTone(channel, freq);
@@ -39,22 +44,6 @@ namespace buzzer
     void buzzEnd()
     {
         buzzer::buzzCustom(0, 0);
-    }
-
-    void setPiezoPin(u_int piezo_pin)
-    {
-        buzzer::piezo_pin = piezo_pin;
-    }
-
-    void test()
-    {
-        buzzer::buzzCustom(127, 200);
-        delay(500);
-        buzzer::buzzCustom(127, 500);
-        delay(500);
-        buzzer::buzzCustom(127, 800);
-        delay(500);
-        buzzer::buzzEnd();
     }
 
     void signalStart()
@@ -144,6 +133,17 @@ namespace buzzer
         buzzer::buzz(860);
         delay(500);
         buzzer::buzz(1080);
+        delay(500);
+        buzzer::buzzEnd();
+    }
+
+    void test()
+    {
+        buzzer::buzzCustom(127, 200);
+        delay(500);
+        buzzer::buzzCustom(127, 500);
+        delay(500);
+        buzzer::buzzCustom(127, 800);
         delay(500);
         buzzer::buzzEnd();
     }
