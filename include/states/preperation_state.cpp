@@ -9,7 +9,7 @@
 #include "flight_state.cpp"
 #include "test_state.cpp"
 #include "arming.h"
-#include "EEPROM.h" //*NEW
+#include "EEPROM.h"
 
 class PreperationState: public State {
     public: 
@@ -52,35 +52,46 @@ class PreperationState: public State {
                 buzzer::signalCalibrationEnd();
             }
 
-            //! Checks second switch with safety against fast pull
+            arming::secondSwitchStart = millis();
             while(!arming::armingSuccess())
             {
-                if(arming::checkSecondSwitch() && arming::timeKeeper && arming::fail == 0)
+                if(!arming::checkFirstSwitch() && !arming::firstSwitchHasBeen)
                 {
-                    magnetometer::saveCorToEEPROM();
-                    arming::AlreadyCalibrated = 1;  
+                    buzzer::buzz(1080);
+                    delay(1000);
+                    buzzer::buzzEnd();
+                    arming::firstSwitchHasBeen = 1;
                 }
-                else if (arming::checkSecondSwitch() && !arming::timeKeeper)
+                if(arming::checkSecondSwitch() && !arming::timeKeeper)
                 {                                                                   
                     arming::fail = 1;                                                          
                     Serial.println("CALIBRATION FAILED, AFFIRMED TOO FAST"); 
-                }   
-            }
-
-            //TODO add 10 second loop (try elegant) after which save eeprom cor and signal
-            magnetometer::getCorEEPROM();
-            //TODO end
-
-      
-            //* permanent loop while not successfull arming or not pulled third switch
-            while(!arming::armingSuccess() || !arming::checkThirdSwitch())
-            {
-                if(arming::armingSuccess() && arming::checkThirdSwitch())
+                } 
+                else if(arming::checkSecondSwitch() && arming::checkThirdSwitch()) //ja ir izvilkts slēdzis 
                 {
-                    this->_context->RequestNextPhase();
-                    this->_context->Start();
+                    buzzer::signalSecondSwitch();
+                    if(millis() - arming::secondSwitchStart > 10000) //un ja pagājis vairāk kā noteiktais intervāls
+                    {
+                        arming::AlreadyCalibrated = 1;
+                        magnetometer::saveCorToEEPROM();
+                        magnetometer::setAsCalibrated();
+                        Serial.println("EEPROM CALIBRATION VALUES SAVED");
+                        buzzer::signalSavedValues();
+                    } 
                 }
+                else
+                {
+                    //Serial.println("Nav sledzis");
+                    arming::secondSwitchStart = millis(); //resetto izvilkšanas sākuma laiku uz pašreizējo laiku
+                }
+                magnetometer::getCorEEPROM();
+                magnetometer::displayCor();
             }
+
+            //* permanent loop while not successfull arming or not pulled third switch
+            while(!arming::checkSecondSwitch() || arming::checkThirdSwitch()) {}
+            this->_context->RequestNextPhase();
+            this->_context->Start();
            
         }
 

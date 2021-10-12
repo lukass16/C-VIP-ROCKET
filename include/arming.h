@@ -38,6 +38,7 @@ namespace arming
     bool fail = 0;
     bool AlreadyCalibrated = 0;
     int USBir = 0;
+    bool firstSwitchHasBeen = 0;
 
     void setup()
     {
