@@ -7,6 +7,7 @@
 #include "gps_wrapper.h"
 #include "magnetometer_wrapper.h"
 #include "sensor_data.h"
+#include "arming.h"
 
 
 class FlightState : public State
