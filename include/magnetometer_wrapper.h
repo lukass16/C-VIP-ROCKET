@@ -328,9 +328,13 @@ namespace magnetometer
         Serial.println("Magnetometer ready!");
     }
 
-    boolean isApogee(float angle = cor_z)
+    boolean isApogee(float field_val = cor_y)
     {
-        return angle <= 17;
+        return field_val <= 10;
+    }
+
+    double getAngle() {
+        return atan(sqrt(pow(IMU.getAccelX_mss(), 2) + pow(IMU.getAccelZ_mss(), 2) ) / IMU.getAccelY_mss())*57.2958;
     }
 
     void calibrate(boolean skip = false)
