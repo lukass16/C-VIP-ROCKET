@@ -9,7 +9,7 @@ namespace barometer {
 
     unsigned long t = millis(); //for some reason it VSCode doesn't like declaring this variable as time (I chose t)
     unsigned long prev_time;
-    float prev_hight, hight, vert_velocity;
+    float prev_height, height, vert_velocity;
 
     float getVertVelocity();
 
@@ -35,7 +35,7 @@ namespace barometer {
         bd.temperature = bmp.readTemperature();
         bd.pressure = bmp.readPressure() / 100;
         bd.altitude = bmp.readAltitude(SEA_LEVEL);
-        bd.vert_velocity = getVertVelocity();  //*NEW
+        bd.vert_velocity = getVertVelocity();
         return bd;
     }
 
@@ -43,9 +43,9 @@ namespace barometer {
     {
         t = millis(); //in seconds
 
-        hight = bmp.readAltitude(1019.66);
-        vert_velocity = ((hight - prev_hight) * 1000) / (t - prev_time); //we multiply by 1000 because we divide by milliseconds
-        prev_hight = hight;
+        height = bmp.readAltitude(1019.66);
+        vert_velocity = ((height - prev_height) * 1000) / (t - prev_time); //we multiply by 1000 because we divide by milliseconds
+        prev_height = height;
         prev_time = t;
 
         return vert_velocity;
@@ -60,11 +60,10 @@ namespace barometer {
         // Serial.print(bmp.readPressure()/100); //displaying the Pressure in hPa, you can change the unit
         // Serial.println(" hPa");
 
-        // Serial.print("Approx altitude = ");
-        // Serial.print(bmp.readAltitude(SEA_LEVEL)); //The "1019.66" is the pressure(hPa) at sea level in my place
-        // Serial.println(" m");                    //If you don't know it, modify it until you get your current altitude
-
-        // Serial.println();
+        Serial.print("Approx altitude = ");
+        Serial.print(bmp.readAltitude(SEA_LEVEL)); //The "1019.66" is the pressure(hPa) at sea level in my place
+        Serial.println(" m");
+        Serial.println();
     }
 
 }

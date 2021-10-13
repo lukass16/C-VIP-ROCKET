@@ -32,7 +32,7 @@ struct BarometerData
     float temperature = 0;
     float pressure = 0;
     float altitude = 0;
-    float vert_velocity = 0; //*NEW
+    float vert_velocity = 0;
 };
 
 

@@ -9,52 +9,38 @@
 #include "gps_wrapper.h"
 #include "barometer_wrapper.h"
 
-class DescentState : public State
-{
-private:
-    int showMessage = 1;
-
-public:
-    void start() override
-    {
-        String msg = "Entering DESCENT STATE";
-        Serial.println(msg);
-
-        buzzer::buzz(0); //why?
-
-        while (true)
+class DescentState : public State {
+    public:
+        void start() override
         {
+            Serial.println("DESCENT STATE");
 
-            // GPS
-            gps::readGps();
-            if (gps::hasData)
+            while (true)
             {
-                sens_data::GpsData gd = gps::getGpsState();
-                s_data.setGpsData(gd);
+                buzzer::signalDescent();
+
+                // GPS
+                gps::readGps();
+                sens_data::GpsData gd;
+                if (gps::hasData)
+                {
+                    gd = gps::getGpsState();
+                    s_data.setGpsData(gd);
+                }
+
+                // MAGNETOMETER
+                magnetometer::readMagnetometer();
+                sens_data::MagenetometerData md = magnetometer::getMagnetometerState();
+                s_data.setMagnetometerData(md);
+
+                // BAROMETER
+                sens_data::BarometerData bd = barometer::getBarometerState();
+                s_data.setBarometerData(bd);
             }
-
-            // MAGNETOMETER
-            magnetometer::readMagnetometer();
-            sens_data::MagenetometerData md = magnetometer::getMagnetometerState();
-            s_data.setMagnetometerData(md);
-
-            // BAROMETER
-            barometer::readSensor(); // This is only to display data
-            sens_data::BarometerData bd = barometer::getBarometerState();
-            s_data.setBarometerData(bd);
-
-            Serial.println("Looping in descent state!");
-
-            //TODO add flash
         }
-    }
 
-    void HandleNextPhase() override
-    {
-        if (showMessage)
+        void HandleNextPhase() override
         {
-            Serial.println("proof of concept --- END of proof of concept");
+            Serial.println("END of VIP ROCKET CODE");
         }
-        showMessage = 0;
-    }
 };

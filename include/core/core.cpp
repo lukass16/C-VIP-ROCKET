@@ -41,7 +41,7 @@ class Context {
         void Start() {
             this->state_->start();
         }
-    //kapec?
+         
         void RequestNextPhase() {
             this->state_->HandleNextPhase();
         }

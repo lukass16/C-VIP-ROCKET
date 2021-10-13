@@ -1,14 +1,13 @@
 #pragma once
 #include <Arduino.h>
 #include "EEPROM.h"
+#include "buzzer.h"
 
 #define EEPROM_SIZE 255
 
-namespace arming
-{
-    bool isEnabled = 0;
+namespace arming {
+
     volatile bool timeKeeper = 0;
-    volatile int interruptCounter;
     hw_timer_t *timer = NULL;
     portMUX_TYPE timerMux = portMUX_INITIALIZER_UNLOCKED;
 
@@ -24,9 +23,9 @@ namespace arming
     int ParachuteBattery1 = 34; //p18 INPUT
     int ParachuteBattery2 = 35; //p17 INPUT
 
-    int USBcheck = 37;     //p14 INPUT
-    int SecondSwitch = 39; //p16 INPUT
-    int ThirdSwitch = 38;  //p15 INPUT
+    int FirstSwitch = 39;     //p14 INPUT
+    int SecondSwitch = 38; //p16 INPUT
+    int ThirdSwitch = 37;  //p15 INPUT
 
     const int ParachutePower = 0; //!JADEFINĒ!
     const int LopyPower = 0;      //!JĀDEFINĒ!
@@ -34,11 +33,13 @@ namespace arming
 
     bool fail = 0;
     bool AlreadyCalibrated = 0;
-    int USBir = 0;
+    bool firstSwitchHasBeen = 0;
+
+    unsigned long secondSwitchStart = 0;
+    
 
     void setup()
     {
-        // *NEW pin defining and settuping varetu ielikt setup funkcija AM wrapper
         pinMode(nihrom, OUTPUT);           //1. nihroma
         pinMode(nihrom2, OUTPUT);          // 2. nihromam
         pinMode(ParachuteBattery1, INPUT); //MOSFET shēmas baterijai
@@ -46,7 +47,7 @@ namespace arming
 
         pinMode(ThirdSwitch, INPUT);
         pinMode(SecondSwitch, INPUT);
-        pinMode(USBcheck, INPUT);
+        pinMode(FirstSwitch, INPUT);
 
         pinMode(out, OUTPUT); //? buzzer
 
@@ -61,26 +62,9 @@ namespace arming
         Serial.println("Arming setup complete!");
     }
 
-    bool isConnectedUSB()
-    {
-        /*
-        parbauda vai ir usb rezims, vai ir pieslegta baterija (ja ir Low tad no baterijas nenak strava, jo nav izvilkts stienis 
-        (ja nav izvilkts stienis tad logiski lopy runo kodu no USB jo savadak nebutu strava) un nav pieslegta ari pati baterija)
-        */
-        //USB check principa ir pirmais sledzis
-        if (digitalRead(USBcheck) == LOW)
-        {
-            return 1; //USB pieslegts
-        }
-        else
-        {
-            return 0;
-        }
-    }
-
     bool checkFirstSwitch()
     {
-        if (digitalRead(USBcheck) == HIGH && digitalRead(SecondSwitch) == LOW && digitalRead(ThirdSwitch) == HIGH)
+        if (digitalRead(FirstSwitch) == HIGH)
         {
             return 1;
         }
@@ -102,15 +86,15 @@ namespace arming
         }
     }
 
-    bool checkThirdSwitch()
+    bool checkThirdSwitch() //!changed
     {
         if (digitalRead(ThirdSwitch) == LOW)
         {
-            return 1;
+            return 0;
         }
         else
         {
-            return 0;
+            return 1;
         }
     }
 
@@ -128,17 +112,31 @@ namespace arming
 
     void nihromActivate()
     {
+        //* jaizskata nihrom activation - apogee detection
         //if (APOGY==DETECTED){
-        digitalWrite(nihrom, HIGH); //pirmais nihroms                   //* jaizskata nihrom activation - apogee detection
+        //digitalWrite(nihrom, HIGH); //pirmais nihroms //!commented out for testing   
+        Serial.println("First Nihrom activated");
+        buzzer::buzz(3400);             
                                     //*POSSIBLE PROBLEM WITH TIMER INTERRUPT - SHOULD USE DIFFERENT INTERRUPT HANDLING FUNCTION (otherwise when checking timeKeeper it's already 1)
         timer = timerBegin(0, 80, true);
         timerAttachInterrupt(timer, &onTimer, true);
         timerAlarmWrite(timer, 1000000, false); //1sek
         timerAlarmEnable(timer);
+
+        //*testing
+        delay(200); 
+        buzzer::buzzEnd();
+        //*
+
         if (timeKeeper)
         {
-            Serial.println("nihromi palaisti");
-            digitalWrite(nihrom2, HIGH); //otrais nihroms
+            Serial.println("Second Nihrom activated"); 
+            //digitalWrite(nihrom2, HIGH); //otrais nihroms //!commented out for testing
+            buzzer::buzz(3400);
+            //*testing
+            delay(200); 
+            buzzer::buzzEnd();
+        //*
         }
     }
 
