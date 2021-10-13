@@ -88,7 +88,7 @@ namespace magnetometer {
         {
             countAcc++;
         }
-        if (countAcc > 50)
+        if (countAcc > 20) //!Changed for test - was 50
         {
             Serial.println("Writing to EEPROM that launch detected");
             EEPROM.writeFloat(36, 1); //Adding that launch is detected
@@ -422,10 +422,6 @@ namespace magnetometer {
         if (isApogee(cor_y))
         {
             buzzer::buzz(3400);
-        }
-        else
-        {
-            buzzer::buzzEnd();
         }
     }
 

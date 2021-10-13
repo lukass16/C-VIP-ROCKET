@@ -54,6 +54,7 @@ class FlightState : public State {
                     if (magnetometer::launch())  //checks if rocket has been launched
                     {
                         magnetometer::startApogeeTimer(14000000); //code to start timer - prints TIMER ENABLED if timer enabled
+                        buzzer::buzz(4000);
                         Serial.println("Launch detected!");
                         timerEnabled = 1;
                     }
@@ -86,7 +87,6 @@ class FlightState : public State {
 
         void HandleNextPhase() override
         {
-            Serial.println("proof of concept --- NEXT STATE for Descent");
             this->_context->TransitionTo(new DescentState());
         }
 };

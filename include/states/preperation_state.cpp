@@ -40,12 +40,12 @@ class PreperationState: public State {
             if(!magnetometer::savedCorToEEPROM())
             {
                 buzzer::signalCalibrationStart();
-                magnetometer::calibrate(1);
+                magnetometer::calibrate();
                 buzzer::signalCalibrationEnd();
             }
             else
             {
-                Serial.println("Magnetometer has already been calibrated - skipping calibration process");
+                Serial.println("Calibration skipped - EEPROM shows as calibrated");
                 buzzer::signalCalibrationStart();
                 buzzer::signalCalibrationEnd();
             }
@@ -81,9 +81,9 @@ class PreperationState: public State {
                 {
                     arming::secondSwitchStart = millis(); //resetto izvilkšanas sākuma laiku uz pašreizējo laiku
                 }
-                magnetometer::getCorEEPROM();
-                magnetometer::displayCor();
             }
+            magnetometer::getCorEEPROM();
+            magnetometer::displayCor();
 
             //permanent loop while not pulled third switch
             while(!arming::checkSecondSwitch() || arming::checkThirdSwitch()) {}

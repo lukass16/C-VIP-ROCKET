@@ -108,14 +108,14 @@ namespace buzzer
 
     void signalDescent() //identical to previous function
     {
-        int interval = 1000; //interval time in milliseconds
+        int interval = 2000; //interval time in milliseconds
         currentTime = millis();
         if (currentTime - previousTime >= interval)
         {
             previousTime = currentTime; //save the last time that buzzer was toggled
             if (!thirdSwitchBeep)       //if not buzzing
             {
-                buzzer::buzz(3400);
+                buzzer::buzz(2000);
                 thirdSwitchBeep = true;
             }
             else
