@@ -18,18 +18,19 @@ namespace arming {
         portEXIT_CRITICAL_ISR(&timerMux);
     }
 
+    //pin definitions
     int nihrom = 33;            //p20 OUTPUT
     int nihrom2 = 32;           //p19 OUTPUT
-    int ParachuteBattery1 = 34; //p18 INPUT
-    int ParachuteBattery2 = 35; //p17 INPUT
+    int ParachuteBattery1 = 35; //p17 INPUT
+    int ParachuteBattery2 = 34; //p18 INPUT
 
     int FirstSwitch = 39;     //p14 INPUT
     int SecondSwitch = 38; //p16 INPUT
     int ThirdSwitch = 37;  //p15 INPUT
 
-    const int ParachutePower = 0; //!JADEFINĒ!
     const int LopyPower = 0;      //!JĀDEFINĒ!
     int out = 26;                 //p21 lampiņa/buzzer
+    int EEPROMclear = 2;       //p8 INPUT
 
     bool fail = 0;
     bool AlreadyCalibrated = 0;
@@ -37,6 +38,19 @@ namespace arming {
 
     unsigned long secondSwitchStart = 0;
     
+    //variables for Parachute battery voltage calculation
+    float rawVoltage = 0;
+    int rawReading = 0;
+    float sumVoltage1 = 0;
+    float sumVoltage2 = 0;
+    float filteredVoltage = 0;
+
+    //variables for Lopy battery voltage calculation
+    int FirstSwitchReading = 0;
+	int SecondSwitchReading = 0;
+	int ThirdSwitchReading = 0;
+    int rawReadingLopy = 0;
+
 
     void setup()
     {
@@ -50,6 +64,7 @@ namespace arming {
         pinMode(FirstSwitch, INPUT);
 
         pinMode(out, OUTPUT); //? buzzer
+        pinMode(EEPROMclear, INPUT_PULLDOWN);
 
         //sak timeri
         timer = timerBegin(0, 80, true);
@@ -60,6 +75,43 @@ namespace arming {
         //EEPROM setup
         EEPROM.begin(EEPROM_SIZE);
         Serial.println("Arming setup complete!");
+    }
+
+    float getBattery1Voltage()
+    {
+        static int readings = 0;
+        readings++;
+        rawReading = analogRead(ParachuteBattery1);
+        rawVoltage = (rawReading/320);
+        sumVoltage1 += rawVoltage;
+        return sumVoltage1/readings;
+    }
+
+    float getBattery2Voltage()
+    {
+        static int readings = 0;
+        readings++;
+        rawReading = analogRead(ParachuteBattery2);
+        rawVoltage = (rawReading/320);
+        sumVoltage2 += rawVoltage;
+        return sumVoltage2/readings;
+    }
+
+    float getLopyBatteryVoltage()
+    {
+        FirstSwitchReading = analogRead(FirstSwitch);
+	    SecondSwitchReading = analogRead(SecondSwitch);
+	    ThirdSwitchReading = analogRead(ThirdSwitch);
+        if(SecondSwitchReading != 0)
+	    {
+		    rawReadingLopy = SecondSwitchReading;
+	    }
+	    else
+	    {
+		    rawReadingLopy = ThirdSwitchReading;
+	    }
+
+        return rawReadingLopy / 620;
     }
 
     bool checkFirstSwitch()
@@ -101,6 +153,18 @@ namespace arming {
     bool armingSuccess()
     {
         if (AlreadyCalibrated == 1 && fail == 0)
+        {
+            return 1;
+        }
+        else
+        {
+            return 0;
+        }
+    }
+
+    bool clearEEPROM()
+    {
+        if(digitalRead(EEPROMclear) == HIGH)
         {
             return 1;
         }

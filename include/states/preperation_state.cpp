@@ -14,6 +14,35 @@
 
 class PreperationState: public State {
     public: 
+
+        void extractData() {
+            static int executions = 0;
+
+            // GPS
+            gps::readGps();
+            sens_data::GpsData gd;
+            if (gps::hasData)
+            {
+                gd = gps::getGpsState();
+                s_data.setGpsData(gd);
+            }
+            // MAGNETOMETER
+            magnetometer::readMagnetometer();
+            sens_data::MagenetometerData md = magnetometer::getMagnetometerState();
+            s_data.setMagnetometerData(md);
+            // BAROMETER
+            sens_data::BarometerData bd = barometer::getBarometerState();
+            s_data.setBarometerData(bd);
+
+            if(executions % 700 == 0)
+            {
+                //Print necessary info during preperation state
+                Serial.println("Parachute Battery 1 Voltage: " + String(arming::getBattery1Voltage()) + "V  Parachute Battery 2 Voltage: " + String(arming::getBattery2Voltage()) + "V");
+                Serial.println("GPS satellites: " + String(gd.sats));
+            }
+            executions++;
+        }
+
         void start () override {
             Serial.println("PREP STATE");
             buzzer::signalStart();
@@ -30,7 +59,10 @@ class PreperationState: public State {
             magnetometer::setup();
             comms::setup(868E6);
 
-            //magnetometer::clearEEPROM();
+            if(arming::clearEEPROM()) //checks EEPROM clear jumper
+            {
+                magnetometer::clearEEPROM();
+            }
             magnetometer::getCorEEPROM();
             magnetometer::displayCor();
 
@@ -56,6 +88,7 @@ class PreperationState: public State {
             arming::secondSwitchStart = millis();
             while(!arming::armingSuccess() && !magnetometer::savedCorToEEPROM())
             {
+                extractData(); //give Data to LoRa for sending and print necessary data in Serial
                 if(!arming::checkFirstSwitch() && !arming::firstSwitchHasBeen)
                 {
                     buzzer::buzz(1080);
@@ -89,7 +122,7 @@ class PreperationState: public State {
             magnetometer::displayCor();
 
             //permanent loop while not pulled third switch
-            while(!arming::checkSecondSwitch() || arming::checkThirdSwitch()) {}
+            while(!arming::checkSecondSwitch() || arming::checkThirdSwitch()) {extractData();}
             this->_context->RequestNextPhase();
             this->_context->Start();
            
