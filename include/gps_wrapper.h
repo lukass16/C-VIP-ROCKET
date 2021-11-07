@@ -1,44 +1,29 @@
 #pragma once
 #include <TinyGPS++.h>
-#include <SoftwareSerial.h>
 #include "sensor_data.h"
 #include "EEPROM.h"
 
 
 namespace gps {
 
-    #define RXPIN 15 //P4 on lopy is set to RX pin (important to remember about crossover connection)
-    #define TXPIN 4  //P3
-    SoftwareSerial gpsSerial;
-    SoftwareSerialConfig ssc = SWSERIAL_8N1; // 8bits-no_parity-1_stop_bit  https://github.com/plerup/espsoftwareserial/
     TinyGPSPlus gps;
-
     boolean hasData = false;
 
     sens_data::GpsData lastData;  //Last data so that values of zero don't get sent when gps doesn't have lock on
 
     void setup(uint gpsRate = 9600)
     {
-        gpsSerial.begin(gpsRate, ssc, RXPIN, TXPIN);
         Serial.println("Init GPS: " + String(gpsRate));
     }
 
     void readGps()
     {
         hasData = false;
-
-        while (gpsSerial.available())
+        while (Serial.available())
         {
-            gps.encode(gpsSerial.read());
+            gps.encode(Serial.read());
             hasData = true;
         }
-
-        // Serial.print("LAT=");
-        // Serial.println(gps.location.lat(), 6);
-        // Serial.print("LONG=");
-        // Serial.println(gps.location.lng(), 6);
-        // Serial.print("ALT=");
-        // Serial.println(gps.altitude.meters());
     }
 
     double lastLatitude() {
