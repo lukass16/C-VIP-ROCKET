@@ -9,6 +9,8 @@
 //*If rocket resets flash is not closed and the values essentially don't get saved - maybe every couple of seconds the flash is closed and opened
 //*If rocket resets the main flash file gets overwritten - the code should be able to tell if rocket has reset and to treat the flash appropriately
 
+unsigned long flash_time = millis();
+
 //to simplify the usage of the Flash header declared a different function - deleteFile - this serves as it's basis
 void delete_File(fs::FS &fs, const char *path)
 {

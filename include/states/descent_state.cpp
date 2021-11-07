@@ -17,7 +17,7 @@ class DescentState : public State {
             Serial.println("DESCENT STATE");
 
             unsigned long start_time_descent = millis();
-            int descent_write_time = 180000; //ms
+            int descent_write_time = 60000; //ms
             bool file_closed = 0;
             File file = flash::openFile();
 
