@@ -43,6 +43,11 @@ namespace gps {
         return gps.satellites.value();
     }
 
+    double getHdop()
+    {
+        return gps.hdop.hdop();
+    }
+
     uint8_t getHour()
     {
         return gps.time.hour();
@@ -105,10 +110,12 @@ namespace gps {
             gd.lat = lastLatitude();
             gd.lng = lastLongitude();
             gd.alt = lastAltitude();
+            gd.sats = getSatellites();
             return gd;
         }
         else
         {
+            lastData.sats = getSatellites();
             return lastData;
         } 
     }

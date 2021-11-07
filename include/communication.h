@@ -45,7 +45,7 @@ namespace comms
         sens_data::GpsData gps = s_data.getGpsData();
         sens_data::MagenetometerData mag = s_data.getMagnetometerData();
         sens_data::BarometerData bar = s_data.getBarometerData();
-        sprintf(outgoing, "%7.4f,%7.4f,%5.0f,%5.2f,%5.2f,%5.2f,%3.1f,%5.1f,%6.1f,%4d", gps.lat, gps.lng, gps.alt, /*+Satellites,*/ mag.x, mag.y, mag.z, bar.temperature /*50-50*/, bar.pressure /*--*/, bar.altitude, /*+Vertical*/ counter);
+        sprintf(outgoing, "%7.4f,%7.4f,%5.0f,%2d,%5.2f,%5.2f,%5.2f,%3.1f,%6.1f,%3.0f,%4d", gps.lat, gps.lng, gps.alt, gps.sats, mag.x, mag.y, mag.z, bar.temperature, bar.altitude, bar.vert_velocity, counter);
         counter++;
         return outgoing;
     }

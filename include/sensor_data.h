@@ -17,6 +17,7 @@ struct GpsData
     double lat = 0;
     double lng = 0;
     double alt = 0;
+    int sats = 0;
 };
 
 struct MagenetometerData 
