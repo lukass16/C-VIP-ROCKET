@@ -9,6 +9,7 @@
 #include "flight_state.cpp"
 #include "test_state.cpp"
 #include "arming.h"
+#include "flash.h"
 #include "EEPROM.h"
 
 class PreperationState: public State {
@@ -22,6 +23,8 @@ class PreperationState: public State {
 
             buzzer::setup();
             buzzer::test();
+            flash::setup();
+            flash::deleteFile("/test.txt"); //!if is reset mid-flight file gets deleted
             gps::setup(9600);            
             barometer::setup();
             magnetometer::setup();

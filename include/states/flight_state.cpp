@@ -41,9 +41,11 @@ class FlightState : public State {
         {
             Serial.println("FLIGHT STATE");
 
+            File file = flash::openFile(); //opening file for writing during flight
+
             //!There is danger that if launch was detected previously the rocket goes
             //!straight to arming and setting apogee timers, so if launch is detected and during testing 
-            //!the launchDetected EEPROM value is not changed it could lead to an inadvertent triggering of the mechanism
+            //!the launchDetected EEPROM value is not changed it could lead to an inadvertent triggering of the mechanism - should test whether if arming pin is inserted this can happen
 
             while (!isApogee())
             {
@@ -77,9 +79,13 @@ class FlightState : public State {
                 // BAROMETER
                 sens_data::BarometerData bd = barometer::getBarometerState();
                 s_data.setBarometerData(bd);
+
+                flash::writeData(file, gd, md, bd); //writing data to flash memory
             }
             Serial.println("APOGEE DETECTED !!!");
             arming::nihromActivate();
+
+            flash::closeFile(file); //closing flash file
 
             this->_context->RequestNextPhase();
             this->_context->Start();

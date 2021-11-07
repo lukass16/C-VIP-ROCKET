@@ -8,12 +8,18 @@
 #include "magnetometer_wrapper.h"
 #include "gps_wrapper.h"
 #include "barometer_wrapper.h"
+#include "flash.h"
 
 class DescentState : public State {
     public:
         void start() override
         {
             Serial.println("DESCENT STATE");
+
+            unsigned long start_time_descent = millis();
+            int descent_write_time = 180000; //ms
+            bool file_closed = 0;
+            File file = flash::openFile();
 
             while (true)
             {
@@ -36,6 +42,17 @@ class DescentState : public State {
                 // BAROMETER
                 sens_data::BarometerData bd = barometer::getBarometerState();
                 s_data.setBarometerData(bd);
+
+                if(millis() - start_time_descent < descent_write_time)
+                {
+                    flash::writeData(file, gd, md, bd); //writing data to flash memory
+                }
+                else if(!file_closed)
+                {
+                    flash::closeFile(file); //closing flash file
+                    Serial.println("Flash data file closed");
+                    file_closed = 1;
+                }  
             }
         }
 
