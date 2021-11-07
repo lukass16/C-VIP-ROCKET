@@ -116,7 +116,7 @@ namespace arming {
 
     bool checkFirstSwitch()
     {
-        if (digitalRead(FirstSwitch) == HIGH)
+        if (analogRead(FirstSwitch) > 700)
         {
             return 1;
         }
@@ -128,7 +128,7 @@ namespace arming {
 
     bool checkSecondSwitch()
     {
-        if (digitalRead(SecondSwitch) == HIGH)
+        if (analogRead(SecondSwitch) > 1000)
         {
             return 1;
         }
@@ -140,13 +140,13 @@ namespace arming {
 
     bool checkThirdSwitch() //!changed
     {
-        if (digitalRead(ThirdSwitch) == LOW)
+        if (analogRead(ThirdSwitch) > 1000)
         {
-            return 0;
+            return 1;
         }
         else
         {
-            return 1;
+            return 0;
         }
     }
 

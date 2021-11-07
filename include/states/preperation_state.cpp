@@ -37,7 +37,7 @@ class PreperationState: public State {
             if(executions % 700 == 0)
             {
                 //Print necessary info during preperation state
-                Serial.println("Parachute Battery 1 Voltage: " + String(arming::getBattery1Voltage()) + "V  Parachute Battery 2 Voltage: " + String(arming::getBattery2Voltage()) + "V");
+                Serial.println("Lopy Battery Voltage: " + String(arming::getLopyBatteryVoltage()) + "V Parachute Battery 1 Voltage: " + String(arming::getBattery1Voltage()) + "V  Parachute Battery 2 Voltage: " + String(arming::getBattery2Voltage()) + "V");
                 Serial.println("GPS satellites: " + String(gd.sats));
             }
             executions++;
