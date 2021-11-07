@@ -44,6 +44,7 @@ class SensorData
         GpsData gpsData;
         MagenetometerData magnetometerData;
         BarometerData barometerData;
+        int batteryStatus;
         Mtx mtx;
     
     public:
@@ -74,7 +75,6 @@ class SensorData
             mtx.unlock();
             return gd;
         }
-
         void setGpsData(GpsData gd) 
         {
             mtx.lock();
@@ -89,11 +89,24 @@ class SensorData
             mtx.unlock();
             return bd;
         }
-
         void setBarometerData(BarometerData bd)
         {
             mtx.lock();
             barometerData = bd;
+            mtx.unlock();
+        }
+
+        bool getBatteryStatus()
+        {
+            mtx.lock();
+            int bs = batteryStatus;
+            mtx.unlock();
+            return bs;
+        }
+        void setBatteryStatus(int bs)
+        {
+            mtx.lock();
+            batteryStatus = bs;
             mtx.unlock();
         }
 };

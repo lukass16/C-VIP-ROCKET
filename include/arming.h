@@ -43,6 +43,8 @@ namespace arming {
     int rawReading = 0;
     float sumVoltage1 = 0;
     float sumVoltage2 = 0;
+    float voltage1 = 0;
+    float voltage2 = 0;
     float filteredVoltage = 0;
 
     //variables for Lopy battery voltage calculation
@@ -84,7 +86,8 @@ namespace arming {
         rawReading = analogRead(ParachuteBattery1);
         rawVoltage = (rawReading/320);
         sumVoltage1 += rawVoltage;
-        return sumVoltage1/readings;
+        voltage1 = sumVoltage1/readings;
+        return voltage1;
     }
 
     float getBattery2Voltage()
@@ -94,7 +97,8 @@ namespace arming {
         rawReading = analogRead(ParachuteBattery2);
         rawVoltage = (rawReading/320);
         sumVoltage2 += rawVoltage;
-        return sumVoltage2/readings;
+        voltage2 = sumVoltage2/readings;
+        return voltage2;
     }
 
     float getLopyBatteryVoltage()
@@ -112,6 +116,18 @@ namespace arming {
 	    }
 
         return rawReadingLopy / 620;
+    }
+
+    bool getParachuteBatteryStatus()
+    {
+        if(voltage1 > 8.1 && voltage2 > 8.1)
+        {
+            return 1;
+        }
+        else
+        {
+            return 0;
+        }
     }
 
     bool checkFirstSwitch()

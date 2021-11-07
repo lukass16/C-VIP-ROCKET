@@ -86,6 +86,10 @@ class FlightState : public State {
                 sens_data::BarometerData bd = barometer::getBarometerState();
                 s_data.setBarometerData(bd);
 
+                // BATTERY STATUS
+                int bs = arming::getParachuteBatteryStatus();
+                s_data.setBatteryStatus(bs);
+
                 if(start_writing)
                 {
                     flash::writeData(file, gd, md, bd); //writing data to flash memory
