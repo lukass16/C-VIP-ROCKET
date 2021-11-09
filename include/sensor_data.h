@@ -39,6 +39,13 @@ struct BarometerData
     float vert_velocity = 0;
 };
 
+struct BatteryData
+{
+    float par1 = 0;
+    float par2 = 0;
+    int bs = 0;
+};
+
 
 class SensorData
 {
@@ -47,7 +54,7 @@ class SensorData
         GpsData gpsData;
         MagenetometerData magnetometerData;
         BarometerData barometerData;
-        int batteryStatus;
+        BatteryData batteryData;
         Mtx mtx;
     
     public:
@@ -99,17 +106,17 @@ class SensorData
             mtx.unlock();
         }
 
-        bool getBatteryStatus()
+        BatteryData getBatteryData()
         {
             mtx.lock();
-            int bs = batteryStatus;
+            BatteryData btd = batteryData;
             mtx.unlock();
-            return bs;
+            return btd;
         }
-        void setBatteryStatus(int bs)
+        void setBatteryData(BatteryData btd)
         {
             mtx.lock();
-            batteryStatus = bs;
+            batteryData = btd;
             mtx.unlock();
         }
 };

@@ -128,10 +128,12 @@ namespace flash
         auto sats = (uint8_t *)(&gpsData.sats); //1.4
 
         //Bar
-        auto temperature = (uint8_t *)(&barData.temperature);
-        auto altitude = (uint8_t *)(&barData.altitude);
-        auto pressure = (uint8_t *)(&barData.pressure);
-        auto vert_velocity = (uint8_t *)(&barData.vert_velocity);
+        auto pressure = (uint8_t *)(&barData.pressure); //2.1
+        auto altitude = (uint8_t *)(&barData.altitude); //2.2
+        auto vert_velocity = (uint8_t *)(&barData.vert_velocity); //2.3
+        auto temperature = (uint8_t *)(&barData.temperature); //2.4
+       
+        
 
         //Mag
         auto x = (uint8_t *)(&magData.x);

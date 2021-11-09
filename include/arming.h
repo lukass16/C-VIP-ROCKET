@@ -2,6 +2,7 @@
 #include <Arduino.h>
 #include "EEPROM.h"
 #include "buzzer.h"
+#include "sensor_data.h"
 
 #define EEPROM_SIZE 255
 
@@ -218,6 +219,15 @@ namespace arming {
             buzzer::buzzEnd();
         //*
         }
+    }
+
+    sens_data::BatteryData getBatteryState()
+    {
+        sens_data::BatteryData BDat;
+        BDat.bs = getParachuteBatteryStatus();
+        BDat.par1 = getBattery1Voltage();
+        BDat.par2 = getBattery2Voltage();
+        return BDat;
     }
 
 }

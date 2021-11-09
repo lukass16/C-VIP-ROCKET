@@ -86,9 +86,9 @@ class FlightState : public State {
                 sens_data::BarometerData bd = barometer::getBarometerState();
                 s_data.setBarometerData(bd);
 
-                // BATTERY STATUS
-                int bs = arming::getParachuteBatteryStatus();
-                s_data.setBatteryStatus(bs);
+                // BATTERIES
+                sens_data::BatteryData btd = arming::getBatteryState();
+                s_data.setBatteryData(btd);
 
                 if(start_writing)
                 {
