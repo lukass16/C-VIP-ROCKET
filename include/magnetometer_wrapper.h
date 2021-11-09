@@ -59,6 +59,9 @@ namespace magnetometer {
     // declaring variables for current accelerometer x y z values in the loop
     float acc_x = 0, acc_y = 0, acc_z = 0;
 
+    // declaring variables for current gyroscope x y z values in the loop
+    float gyr_x = 0, gyr_y = 0, gyr_z = 0;
+
     //creating variables for timer and launch
     float detAcc = 0;
     int countAcc = 0;
@@ -144,11 +147,43 @@ namespace magnetometer {
         return acc_z;
     }
 
+    float getGyroX()
+    {
+        gyr_x = IMU.getGyroX_rads();
+        return gyr_x;
+    }
+
+    float getGyroY()
+    {
+        gyr_y = IMU.getGyroY_rads();
+        return gyr_y;
+    }
+
+    float getGyroZ()
+    {
+        gyr_z = IMU.getGyroZ_rads();
+        return gyr_z;
+    }
+
+    void getMagValues()
+    {
+        cor_x = (IMU.getMagX_uT() - offset_x) * scale_x;
+        cor_y = (IMU.getMagY_uT() - offset_y) * scale_y;
+        cor_z = (IMU.getMagZ_uT() - offset_z) * scale_z;
+    }
+
     void getAccelValues()
     {
         getAccX();
         getAccY();
         getAccZ();
+    }
+
+    void getGyroValues()
+    {
+        getGyroX();
+        getGyroY();
+        getGyroZ();
     }
 
     void displayAcceleration()
@@ -255,13 +290,6 @@ namespace magnetometer {
         Serial.println(offset_z);
         Serial.print("scale_z ");
         Serial.println(scale_z);
-    }
-
-    void getMagValues()
-    {
-        cor_x = (IMU.getMagX_uT() - offset_x) * scale_x;
-        cor_y = (IMU.getMagY_uT() - offset_y) * scale_y;
-        cor_z = (IMU.getMagZ_uT() - offset_z) * scale_z;
     }
 
     void setup()
@@ -432,7 +460,8 @@ namespace magnetometer {
 
         getMagValues();
         getAccelValues();
-        //displayData();
+        getGyroValues();
+
         //processApogee();
     }
 
