@@ -442,6 +442,9 @@ namespace magnetometer {
         MDat.x = cor_x;
         MDat.y = cor_y;
         MDat.z = cor_z;
+        MDat.acc_x = acc_x;
+        MDat.acc_y = acc_y;
+        MDat.acc_z = acc_z;
         return MDat;
     }
 
@@ -460,7 +463,6 @@ namespace magnetometer {
 
         getMagValues();
         getAccelValues();
-        getGyroValues();
 
         //processApogee();
     }

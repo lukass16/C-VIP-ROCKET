@@ -118,19 +118,14 @@ namespace flash
     void writeData(File file, sens_data::GpsData gpsData, sens_data::MagenetometerData magData, sens_data::BarometerData barData)
     {
         //GPS
-        float _lat = gpsData.lat;
-        float _lng = gpsData.lng;
-        float _alt = gpsData.alt;
+        float _lat = gpsData.lat; //1.1
+        float _lng = gpsData.lng; //1.2
+        float _alt = gpsData.alt; //1.3
 
         auto lat = (uint8_t *)(&_lat);
         auto lng = (uint8_t *)(&_lng);
         auto alt = (uint8_t *)(&_alt);
-
-        //Mag
-        auto x = (uint8_t *)(&magData.x);
-        auto y = (uint8_t *)(&magData.y);
-        auto z = (uint8_t *)(&magData.z);
-        auto a = (uint8_t *)(&magData.a);
+        auto sats = (uint8_t *)(&gpsData.sats); //1.4
 
         //Bar
         auto temperature = (uint8_t *)(&barData.temperature);
@@ -138,7 +133,15 @@ namespace flash
         auto pressure = (uint8_t *)(&barData.pressure);
         auto vert_velocity = (uint8_t *)(&barData.vert_velocity);
 
-        auto const buf_size = sizeof(lat) + sizeof(lng) + sizeof(alt) + sizeof(x) + sizeof(y) + sizeof(z) + sizeof(a) + sizeof(temperature) + sizeof(altitude) + sizeof(pressure) + sizeof(vert_velocity);
+        //Mag
+        auto x = (uint8_t *)(&magData.x);
+        auto y = (uint8_t *)(&magData.y);
+        auto z = (uint8_t *)(&magData.z);
+        auto acc_x = (uint8_t *)(&magData.acc_x);
+        auto acc_y = (uint8_t *)(&magData.acc_y);
+        auto acc_z = (uint8_t *)(&magData.acc_z);
+
+        auto const buf_size = sizeof(lat) + sizeof(lng) + sizeof(alt) + sizeof(x) + sizeof(y) + sizeof(z) + sizeof(acc_x) + sizeof(temperature) + sizeof(altitude) + sizeof(pressure) + sizeof(vert_velocity);
         Buffer<buf_size> buffer;
 
         buffer.push(lat);
@@ -148,7 +151,7 @@ namespace flash
         buffer.push(x);
         buffer.push(y);
         buffer.push(z);
-        buffer.push(a);
+        buffer.push(acc_x);
 
         buffer.push(temperature);
         buffer.push(altitude);

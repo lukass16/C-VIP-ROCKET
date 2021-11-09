@@ -25,7 +25,10 @@ struct MagenetometerData
     float x = 0;
     float y = 0;
     float z = 0;
-    float a = 0; // Acceleration
+    // Acceleration
+    float acc_x = 0;
+    float acc_y = 0;
+    float acc_z = 0;
 };
 
 struct BarometerData 
