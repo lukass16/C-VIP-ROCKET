@@ -230,4 +230,9 @@ namespace flash
     {
         file.close();
     }
+
+    float getTimeElapsed() //*Check overflow
+    {
+        return millis()-flash_time;
+    }
 }
