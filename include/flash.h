@@ -138,12 +138,12 @@ namespace flash
         auto bat2 = (uint8_t *)(&batData.bat2); //3.2
 
         //Mag
-        auto x = (uint8_t *)(&magData.x);
-        auto y = (uint8_t *)(&magData.y);
-        auto z = (uint8_t *)(&magData.z);
-        auto acc_x = (uint8_t *)(&magData.acc_x);
-        auto acc_y = (uint8_t *)(&magData.acc_y);
-        auto acc_z = (uint8_t *)(&magData.acc_z);
+        auto x = (uint8_t *)(&magData.x); //4.1
+        auto y = (uint8_t *)(&magData.y); //4.2
+        auto z = (uint8_t *)(&magData.z); //4.3
+        auto acc_x = (uint8_t *)(&magData.acc_x); //4.4
+        auto acc_y = (uint8_t *)(&magData.acc_y); //4.5
+        auto acc_z = (uint8_t *)(&magData.acc_z); //4.6
 
         auto const buf_size = sizeof(lat) + sizeof(lng) + sizeof(alt) + sizeof(x) + sizeof(y) + sizeof(z) + sizeof(acc_x) + sizeof(temperature) + sizeof(altitude) + sizeof(pressure) + sizeof(vert_velocity);
         Buffer<buf_size> buffer;
