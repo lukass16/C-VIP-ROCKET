@@ -225,8 +225,8 @@ namespace arming {
     {
         sens_data::BatteryData BDat;
         BDat.bs = getParachuteBatteryStatus();
-        BDat.par1 = getBattery1Voltage();
-        BDat.par2 = getBattery2Voltage();
+        BDat.bat1 = getBattery1Voltage();
+        BDat.bat2 = getBattery2Voltage();
         return BDat;
     }
 

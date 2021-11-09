@@ -92,7 +92,7 @@ class FlightState : public State {
 
                 if(start_writing)
                 {
-                    flash::writeData(file, gd, md, bd); //writing data to flash memory
+                    flash::writeData(file, gd, md, bd, btd); //writing data to flash memory
                 }
                 
             }

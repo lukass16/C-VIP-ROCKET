@@ -115,7 +115,7 @@ namespace flash
     }
 
     //should still add a lot of writeable information: https://docs.google.com/document/d/1jWQnLnQJqiII_0ii84CKXIUmW_RAO8ebAFO_XuiE9oU/edit
-    void writeData(File file, sens_data::GpsData gpsData, sens_data::MagenetometerData magData, sens_data::BarometerData barData)
+    void writeData(File file, sens_data::GpsData gpsData, sens_data::MagenetometerData magData, sens_data::BarometerData barData, sens_data::BatteryData batData)
     {
         //GPS
         float _lat = gpsData.lat; //1.1
@@ -133,7 +133,9 @@ namespace flash
         auto vert_velocity = (uint8_t *)(&barData.vert_velocity); //2.3
         auto temperature = (uint8_t *)(&barData.temperature); //2.4
        
-        
+        //Bat
+        auto bat1 = (uint8_t *)(&batData.bat1); //3.1
+        auto bat2 = (uint8_t *)(&batData.bat2); //3.2
 
         //Mag
         auto x = (uint8_t *)(&magData.x);

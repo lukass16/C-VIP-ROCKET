@@ -41,8 +41,8 @@ struct BarometerData
 
 struct BatteryData
 {
-    float par1 = 0;
-    float par2 = 0;
+    float bat1 = 0;
+    float bat2 = 0;
     int bs = 0;
 };
 

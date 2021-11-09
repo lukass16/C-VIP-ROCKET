@@ -8,6 +8,7 @@
 #include "magnetometer_wrapper.h"
 #include "gps_wrapper.h"
 #include "barometer_wrapper.h"
+#include "arming.h"
 #include "flash.h"
 
 class DescentState : public State {
@@ -43,9 +44,13 @@ class DescentState : public State {
                 sens_data::BarometerData bd = barometer::getBarometerState();
                 s_data.setBarometerData(bd);
 
+                // BATTERIES
+                sens_data::BatteryData btd = arming::getBatteryState();
+                s_data.setBatteryData(btd);
+
                 if(millis() - start_time_descent < descent_write_time)
                 {
-                    flash::writeData(file, gd, md, bd); //writing data to flash memory
+                    flash::writeData(file, gd, md, bd, btd); //writing data to flash memory
                 }
                 else if(!file_closed)
                 {
