@@ -18,7 +18,7 @@ class DescentState : public State {
             Serial.println("DESCENT STATE");
 
             unsigned long start_time_descent = millis();
-            int descent_write_time = 60000; //ms
+            int descent_write_time = 10000; //ms
             bool file_closed = 0;
             File file = flash::openFile();
 
@@ -55,6 +55,7 @@ class DescentState : public State {
                 else if(!file_closed)
                 {
                     flash::closeFile(file); //closing flash file
+                    flash::readFlash("/test.txt");
                     Serial.println("Flash data file closed");
                     file_closed = 1;
                 }  

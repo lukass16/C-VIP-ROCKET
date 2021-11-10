@@ -121,11 +121,12 @@ namespace flash
         float _lat = gpsData.lat; //1.1
         float _lng = gpsData.lng; //1.2
         float _alt = gpsData.alt; //1.3
+        float _sats = gpsData.sats; //1.4
 
         auto lat = (uint8_t *)(&_lat);
         auto lng = (uint8_t *)(&_lng);
         auto alt = (uint8_t *)(&_alt);
-        auto sats = (uint8_t *)(&gpsData.sats); //1.4
+        auto sats = (uint8_t *)(&_sats); //1.4
 
         //Bar
         auto pressure = (uint8_t *)(&barData.pressure); //2.1
@@ -145,22 +146,28 @@ namespace flash
         auto acc_y = (uint8_t *)(&magData.acc_y); //4.5
         auto acc_z = (uint8_t *)(&magData.acc_z); //4.6
 
-        auto const buf_size = sizeof(lat) + sizeof(lng) + sizeof(alt) + sizeof(x) + sizeof(y) + sizeof(z) + sizeof(acc_x) + sizeof(temperature) + sizeof(altitude) + sizeof(pressure) + sizeof(vert_velocity);
+        auto const buf_size = sizeof(lat) + sizeof(lng) + sizeof(alt) + sizeof(sats) + sizeof(pressure) + sizeof(altitude) + sizeof(vert_velocity) + sizeof(temperature) + sizeof(bat1) + sizeof(bat2) + sizeof(x) + sizeof(y) + sizeof(z) + sizeof(acc_x) + sizeof(acc_y) + sizeof(acc_z);
         Buffer<buf_size> buffer;
 
         buffer.push(lat);
         buffer.push(lng);
         buffer.push(alt);
+        buffer.push(sats);
 
+        buffer.push(pressure);
+        buffer.push(altitude);
+        buffer.push(vert_velocity);
+        buffer.push(temperature);
+        
+        buffer.push(bat1);
+        buffer.push(bat2);
+        
         buffer.push(x);
         buffer.push(y);
         buffer.push(z);
         buffer.push(acc_x);
-
-        buffer.push(temperature);
-        buffer.push(altitude);
-        buffer.push(pressure);
-        buffer.push(vert_velocity);
+        buffer.push(acc_y);
+        buffer.push(acc_z);
 
         if (!file)
         {
@@ -175,7 +182,7 @@ namespace flash
     {
         File file = LITTLEFS.open(path);
         //This is the size of reading
-        auto const buf_size = sizeof(float) + sizeof(float) + sizeof(float) + sizeof(float) + sizeof(float) + sizeof(float) + sizeof(float) + sizeof(float) + sizeof(float) + sizeof(float) + sizeof(float);   
+        auto const buf_size = sizeof(float) + sizeof(float) + sizeof(float) + sizeof(float) + sizeof(float) + sizeof(float) + sizeof(float) + sizeof(float) + sizeof(float) + sizeof(float) + sizeof(float) + sizeof(float) + sizeof(float) + sizeof(float) + sizeof(float) + sizeof(float);   
         while (file.available())
         {
             ; //! why?
@@ -196,6 +203,36 @@ namespace flash
             stream.getValue<float>(&alt);
             Serial.println("alt: " + String(alt, 10));
 
+            float sats = 0;
+            stream.getValue<float>(&sats);
+            Serial.println("sats: " + String(sats, 10));
+
+            //Bar
+            float pressure = 0;
+            stream.getValue<float>(&pressure);
+            Serial.println("pressure: " + String(pressure, 10));
+
+            float altitude = 0;
+            stream.getValue<float>(&altitude);
+            Serial.println("altitude: " + String(altitude, 10));
+
+            float vert_velocity = 0;
+            stream.getValue<float>(&vert_velocity);
+            Serial.println("vert_velocity: " + String(vert_velocity, 10));
+
+            float temperature = 0;
+            stream.getValue<float>(&temperature);
+            Serial.println("temperature: " + String(temperature, 10));
+
+            //Bat
+            float bat1 = 0;
+            stream.getValue<float>(&bat1);
+            Serial.println("bat1: " + String(bat1, 10));
+
+            float bat2 = 0;
+            stream.getValue<float>(&bat2);
+            Serial.println("bat2: " + String(bat2, 10));
+            
             //Mag
             float x = 0;
             stream.getValue<float>(&x);
@@ -209,26 +246,18 @@ namespace flash
             stream.getValue<float>(&z);
             Serial.println("magz: " + String(z, 10));
 
-            float a = 0;
-            stream.getValue<float>(&a);
-            Serial.println("magacc: " + String(a, 10));
+            float acc_x = 0;
+            stream.getValue<float>(&acc_x);
+            Serial.println("magacc_x: " + String(acc_x, 10));
+            
+            float acc_y = 0;
+            stream.getValue<float>(&acc_y);
+            Serial.println("magacc_y: " + String(acc_y, 10));
+            
+            float acc_z = 0;
+            stream.getValue<float>(&acc_z);
+            Serial.println("magacc_z: " + String(acc_z, 10));
 
-            //Bar
-            float temp = 0;
-            stream.getValue<float>(&temp);
-            Serial.println("Temperature: " + String(temp, 10));
-
-            float altitude = 0;
-            stream.getValue<float>(&altitude);
-            Serial.println("Altitude: " + String(altitude, 10));
-
-            float pressure = 0;
-            stream.getValue<float>(&pressure);
-            Serial.println("Pressure: " + String(pressure, 10));
-
-            float vert_velocity = 0;
-            stream.getValue<float>(&vert_velocity);
-            Serial.println("Vertical velocity: " + String(vert_velocity, 10));
         }
         file.close();
     }
