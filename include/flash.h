@@ -89,6 +89,11 @@ namespace flash
         return file;
     }
 
+    float getTimeElapsed() //*Check overflow
+    {
+        return millis()-flash_time;
+    }
+
     void testFileIO(File file, int multiplier)
     {
         float x_float = 0.0 + multiplier;
@@ -117,6 +122,10 @@ namespace flash
     //should still add a lot of writeable information: https://docs.google.com/document/d/1jWQnLnQJqiII_0ii84CKXIUmW_RAO8ebAFO_XuiE9oU/edit
     void writeData(File file, sens_data::GpsData gpsData, sens_data::MagenetometerData magData, sens_data::BarometerData barData, sens_data::BatteryData batData)
     {
+        //Flash timing
+        float _time = flash::getTimeElapsed();
+        auto time = (uint8_t *)(&_time);
+
         //GPS
         float _lat = gpsData.lat; //1.1
         float _lng = gpsData.lng; //1.2
@@ -146,8 +155,10 @@ namespace flash
         auto acc_y = (uint8_t *)(&magData.acc_y); //4.5
         auto acc_z = (uint8_t *)(&magData.acc_z); //4.6
 
-        auto const buf_size = sizeof(lat) + sizeof(lng) + sizeof(alt) + sizeof(sats) + sizeof(pressure) + sizeof(altitude) + sizeof(vert_velocity) + sizeof(temperature) + sizeof(bat1) + sizeof(bat2) + sizeof(x) + sizeof(y) + sizeof(z) + sizeof(acc_x) + sizeof(acc_y) + sizeof(acc_z);
+        auto const buf_size = sizeof(time) + sizeof(lat) + sizeof(lng) + sizeof(alt) + sizeof(sats) + sizeof(pressure) + sizeof(altitude) + sizeof(vert_velocity) + sizeof(temperature) + sizeof(bat1) + sizeof(bat2) + sizeof(x) + sizeof(y) + sizeof(z) + sizeof(acc_x) + sizeof(acc_y) + sizeof(acc_z);
         Buffer<buf_size> buffer;
+
+        buffer.push(time);
 
         buffer.push(lat);
         buffer.push(lng);
@@ -182,7 +193,7 @@ namespace flash
     {
         File file = LITTLEFS.open(path);
         //This is the size of reading
-        auto const buf_size = sizeof(float) + sizeof(float) + sizeof(float) + sizeof(float) + sizeof(float) + sizeof(float) + sizeof(float) + sizeof(float) + sizeof(float) + sizeof(float) + sizeof(float) + sizeof(float) + sizeof(float) + sizeof(float) + sizeof(float) + sizeof(float);   
+        auto const buf_size = sizeof(float) + sizeof(float) + sizeof(float) + sizeof(float) + sizeof(float) + sizeof(float) + sizeof(float) + sizeof(float) + sizeof(float) + sizeof(float) + sizeof(float) + sizeof(float) + sizeof(float) + sizeof(float) + sizeof(float) + sizeof(float) + sizeof(float);   
         while (file.available())
         {
             ; //! why?
@@ -190,6 +201,12 @@ namespace flash
             StreamPipe<buf_size> stream;
             file.readBytes(stream.buf_out, buf_size);
  
+
+            //Time
+            float time = 0;
+            stream.getValue<float>(&time);
+            Serial.println("ellapsed time: " + String(time, 10));
+
             //GPS
             float lat = 0;
             stream.getValue<float>(&lat);
@@ -258,6 +275,8 @@ namespace flash
             stream.getValue<float>(&acc_z);
             Serial.println("magacc_z: " + String(acc_z, 10));
 
+            Serial.println();
+
         }
         file.close();
     }
@@ -265,10 +284,5 @@ namespace flash
     void closeFile(File file)
     {
         file.close();
-    }
-
-    float getTimeElapsed() //*Check overflow
-    {
-        return millis()-flash_time;
     }
 }
