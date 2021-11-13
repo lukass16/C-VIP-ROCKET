@@ -6,6 +6,8 @@
 #include "sensor_data.h"
 #include "EEPROM.h"
 
+//note: this wrapper also includes the EEPROM functionality
+
 namespace magnetometer {
     
     // an MPU9250 object with the MPU-9250 sensor on I2C bus 0 with address 0x68
@@ -254,7 +256,7 @@ namespace magnetometer {
 
     void clearEEPROM()
     {
-        for (int i = 0; i <= 36; i = i + 4)
+        for (int i = 0; i <= 40; i = i + 4)
         {
             EEPROM.writeFloat(i, 0.0);
         }

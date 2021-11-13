@@ -53,7 +53,7 @@ class PreperationState: public State {
             buzzer::setup();
             buzzer::test();
             flash::setup();
-            flash::deleteFile("/test.txt"); //!if is reset mid-flight file gets deleted
+            if(!flash::locked()){flash::deleteFile("/test.txt");} //if file is done writing to don't rewrite it
             gps::setup(9600);            
             barometer::setup();
             magnetometer::setup();
