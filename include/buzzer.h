@@ -5,7 +5,15 @@
 
 namespace buzzer
 {
-
+    /*
+     __         __
+/  \.-"""-./  \
+\    -   -    /
+ |   o   o   |
+ \  .-'''-.  /
+  '-\__Y__/-'
+     `---`
+    */
     //declaring a variable for the piezo pin
     int piezo_pin = 21;
 
