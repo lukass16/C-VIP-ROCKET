@@ -61,6 +61,7 @@ class FlightState : public State {
                     if (magnetometer::launch())  //checks if rocket has been launched
                     {
                         magnetometer::startApogeeTimer(14000000); //code to start timer - prints TIMER ENABLED if timer enabled
+                        magnetometer::arm(); //magnetometer can detect apogee
                         buzzer::buzz(4000);
                         Serial.println("Launch detected!");
                         timerEnabled = 1;

@@ -69,6 +69,7 @@ class PreperationState: public State {
 
             if(magnetometer::hasBeenLaunch())
             {
+                magnetometer::arm();
                 this->_context->RequestNextPhase(); //! Transition to flight state
                 this->_context->Start();
             }

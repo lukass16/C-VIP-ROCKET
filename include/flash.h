@@ -392,7 +392,7 @@ namespace flash
     {
         if (EEPROM.readFloat(40) == 5)
         {
-            Serial.println("Cannot write to flash - locked");
+            Serial.println("Cannot delete flash - locked");
             return 1;
         }
         else {return 0;}
