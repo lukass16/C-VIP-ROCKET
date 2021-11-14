@@ -256,7 +256,7 @@ namespace magnetometer {
 
     void clearEEPROM()
     {
-        for (int i = 0; i <= 40; i = i + 4)
+        for (int i = 0; i <= 36; i = i + 4)
         {
             EEPROM.writeFloat(i, 0.0);
         }

@@ -20,7 +20,6 @@ class DescentState : public State {
             unsigned long start_time_descent = millis();
             int descent_write_time = 10000; //ms
             bool file_closed = 0;
-            if(flash::isLocked){file_closed = 1;} //safety so that flash doesnt get overwritten
             File file = flash::openFile();
 
             while (true)
@@ -58,7 +57,6 @@ class DescentState : public State {
                     flash::closeFile(file); //closing flash file
                     //flash::readFlash("/test.txt"); //!testing
                     Serial.println("Flash data file closed");
-                    flash::lock();
                     file_closed = 1;
                 }  
             }

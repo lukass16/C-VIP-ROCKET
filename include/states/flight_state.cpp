@@ -64,7 +64,8 @@ class FlightState : public State {
                         buzzer::buzz(4000);
                         Serial.println("Launch detected!");
                         timerEnabled = 1;
-                        if(!flash::isLocked){start_writing = 1;} //starts writing to flash after launch (unless it's locked)
+                        start_writing = 1; //starts writing to flash after launch
+                        flash::lock(); //if launch has happened lock the flash - it can't be deleted after
                     }
                 }
 

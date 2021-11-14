@@ -53,7 +53,6 @@ class PreperationState: public State {
             buzzer::setup();
             buzzer::test();
             flash::setup();
-            if(!flash::locked()){flash::deleteFile("/test.txt");} //if file is done writing to don't rewrite it
             gps::setup(9600);            
             barometer::setup();
             magnetometer::setup();
@@ -62,7 +61,9 @@ class PreperationState: public State {
             if(arming::clearEEPROM()) //checks EEPROM clear jumper
             {
                 magnetometer::clearEEPROM();
+                flash::unlock();
             }
+            if(!flash::locked()){flash::deleteFile("/test.txt");} //if file is done writing to don't rewrite it
             magnetometer::getCorEEPROM();
             magnetometer::displayCor();
 
