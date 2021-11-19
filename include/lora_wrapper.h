@@ -46,8 +46,7 @@ namespace lora {
         LoRa.setCodingRate4(6);
         LoRa.setSignalBandwidth(62.5E3);
 
-        Serial.println("Lora connected");
-        Serial.println(LoRa.available());
+        Serial.println("Lora initialized!");
     }
 
     void sendMessage(String outgoing, int lora_message_id)

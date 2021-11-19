@@ -44,18 +44,20 @@ class PreperationState: public State {
         }
 
         void start () override {
+            unsigned long start_time = millis();
+            float ellapsed = 0;
             Serial.println("PREP STATE");
-            buzzer::signalStart();
-
-            arming::setup();
-            Wire.begin(12, 13);
 
             buzzer::setup();
-            buzzer::test();
+            buzzer::signalStart();
+            arming::setup();
+
+            Wire.begin(12, 13);
             flash::setup();
             //flash::readFlash("/test.txt"); //!testing
-            gps::setup(9600);            
+            gps::setup(9600);
             barometer::setup();
+            buzzer::buzzEnd(); //?end start signal
             magnetometer::setup();
             comms::setup(868E6);
 
@@ -66,7 +68,6 @@ class PreperationState: public State {
             }
             if(!flash::locked()){flash::deleteFile("/test.txt");} //if file is done writing to don't rewrite it
             magnetometer::getCorEEPROM();
-            magnetometer::displayCor();
 
             if(magnetometer::hasBeenLaunch())
             {
