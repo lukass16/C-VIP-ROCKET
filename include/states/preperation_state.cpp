@@ -37,8 +37,8 @@ class PreperationState: public State {
             if(executions % 700 == 0)
             {
                 //Print necessary info during preperation state
-                Serial.print("Lopy Battery Voltage: " + String(arming::getLopyBatteryVoltage()) + "V PB 1 Voltage: " + String(arming::getBattery1Voltage()) + "V  PB 2 Voltage: " + String(arming::getBattery2Voltage()) + "V");
-                Serial.println(" GPS satellites: " + String(gd.sats));
+                Serial.print("FCB: " + String(arming::getLopyBatteryVoltage()) + "V\tPB 1: " + String(arming::getBattery1Voltage()) + "V\tPB 2: " + String(arming::getBattery2Voltage()) + "V");
+                Serial.println("\tGPS sats: " + String(gd.sats));
             }
             executions++;
         }
@@ -53,7 +53,7 @@ class PreperationState: public State {
             buzzer::setup();
             buzzer::test();
             flash::setup();
-            flash::readFlash("/test.txt"); //!testing
+            //flash::readFlash("/test.txt"); //!testing
             gps::setup(9600);            
             barometer::setup();
             magnetometer::setup();
