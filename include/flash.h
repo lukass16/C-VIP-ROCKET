@@ -122,8 +122,11 @@ namespace flash
     }
 
     //should still add a lot of writeable information: https://docs.google.com/document/d/1jWQnLnQJqiII_0ii84CKXIUmW_RAO8ebAFO_XuiE9oU/edit
-    void writeData(File file, sens_data::GpsData gpsData, sens_data::MagenetometerData magData, sens_data::BarometerData barData, sens_data::BatteryData batData)
+    int writeData(File file, sens_data::GpsData gpsData, sens_data::MagenetometerData magData, sens_data::BarometerData barData, sens_data::BatteryData batData)
     {
+        //counter for closing and opening file
+        static int counter;
+
         //Flash timing
         float _time = flash::getTimeElapsed();
         auto time = (uint8_t *)(&_time);
@@ -185,9 +188,12 @@ namespace flash
         if (!file)
         {
             Serial.println("- failed to open file for writing");
-            return;
+            return 0;
         }
         file.write(buffer.buf, buf_size);
+
+        counter++;
+        return counter;
     }
 
 
