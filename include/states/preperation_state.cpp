@@ -44,8 +44,6 @@ class PreperationState: public State {
         }
 
         void start () override {
-            unsigned long start_time = millis();
-            float ellapsed = 0;
             Serial.println("PREP STATE");
 
             buzzer::setup();
