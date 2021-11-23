@@ -6,7 +6,7 @@ Adafruit_BMP280 bmp; // I2C Interface
 
 namespace barometer {
     const float SEA_LEVEL = 1019.66;
-    float sea_level_read = 1019.66;
+    float sea_level_read = 0;
 
     unsigned long t = millis(); //for some reason it VSCode doesn't like declaring this variable as time (I chose t)
     unsigned long prev_time;
@@ -29,7 +29,7 @@ namespace barometer {
                     Adafruit_BMP280::STANDBY_MS_500); /* Standby time. */
         if (read_sea_level) {
             for(int i=0; i<5; i++){
-                sea_level_read+=read_sea_level;
+                sea_level_read+=(bmp.readPressure()/100);
             }
             sea_level_read = sea_level_read / 5;
         }
