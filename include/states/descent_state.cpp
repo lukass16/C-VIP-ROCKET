@@ -21,6 +21,7 @@ class DescentState : public State {
             int descent_write_time = 10000; //ms
             int flash_counter = 0;
             bool file_closed = 0;
+            sens_data::GpsData gd;
             arming::nihromDisable(); //!this is for tests and should not be in the final version
             File file = flash::openFile();
 
@@ -30,7 +31,6 @@ class DescentState : public State {
 
                 // GPS
                 gps::readGps();
-                sens_data::GpsData gd;
                 if (gps::hasData)
                 {
                     gd = gps::getGpsState();

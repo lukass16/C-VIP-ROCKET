@@ -14,13 +14,12 @@
 
 class PreperationState: public State {
     public: 
-
+        sens_data::GpsData gd;
         void extractData() {
             static int executions = 0;
 
             // GPS
             gps::readGps();
-            sens_data::GpsData gd;
             if (gps::hasData)
             {
                 gd = gps::getGpsState();

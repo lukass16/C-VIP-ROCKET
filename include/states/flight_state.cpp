@@ -15,7 +15,8 @@ class FlightState : public State {
         volatile bool timerDetAp = 0;
         bool timerEnabled = 0;
         int flash_counter = 0;
-
+        sens_data::GpsData gd;
+        
         int magcount = 0;
         boolean isApogee()
         {
@@ -73,7 +74,6 @@ class FlightState : public State {
 
                 // GPS
                 gps::readGps();
-                sens_data::GpsData gd;
                 if (gps::hasData)
                 {
                     gd = gps::getGpsState();
@@ -96,7 +96,7 @@ class FlightState : public State {
                 if(start_writing)
                 {
                     flash_counter = flash::writeData(file, gd, md, bd, btd); //writing data to flash memory
-                    if(flash_counter % 100 == 0){flash::closeFile(file);file=flash::openFile();} //close and open the file every 100th reading
+                    
                 }
                 
             }
