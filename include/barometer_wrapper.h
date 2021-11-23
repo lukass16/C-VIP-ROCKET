@@ -7,10 +7,8 @@ Adafruit_BMP280 bmp; // I2C Interface
 namespace barometer {
     const float SEA_LEVEL = 1019.66;
     float sea_level_read = 0;
-
-    unsigned long t = millis(); //for some reason it VSCode doesn't like declaring this variable as time (I chose t)
-    unsigned long prev_time;
-    float prev_height, height, vert_velocity;
+    //defining necessary variables for vertical velocity calculation
+    float h_now = 0, h_prev = 0, t_now = 0, t_prev = 0, dh = 0, dt = 0, vert_velocity = 0, vert_velocity_prev = 0;
 
     float getVertVelocity();
 
@@ -51,14 +49,22 @@ namespace barometer {
 
     float getVertVelocity()
     {
-        t = millis(); //in seconds
-
-        height = bmp.readAltitude(1019.66);
-        vert_velocity = ((height - prev_height) * 1000) / (t - prev_time); //we multiply by 1000 because we divide by milliseconds
-        prev_height = height;
-        prev_time = t;
-
-        return vert_velocity;
+        static int counter = 0;
+        counter++;
+        if(counter % 3 == 0) //every 3rd call
+        {
+            h_now = bmp.readAltitude(sea_level_read); //in m
+            t_now = millis() / 1000.0; //in ms
+            dt = t_now - t_prev;
+            dh = h_now - h_prev;
+            vert_velocity = dh/dt;
+            //reverting values
+            h_prev = h_now;
+            t_prev = t_now;
+            vert_velocity_prev = vert_velocity;
+            return vert_velocity;
+        }
+        else {return vert_velocity_prev;}
     }
 
     void readSensor() {
