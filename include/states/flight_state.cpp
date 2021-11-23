@@ -101,7 +101,7 @@ class FlightState : public State {
                 
             }
             Serial.println("APOGEE DETECTED !!!");
-            arming::nihromActivate();
+            arming::nihromActivateFirst();
 
             flash::closeFile(file); //closing flash file
 

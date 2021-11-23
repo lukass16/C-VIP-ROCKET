@@ -6,8 +6,11 @@
 
 #define EEPROM_SIZE 255
 
+//! the same handling function assesses the arming timer of the switch being pulled too fast and the second nihrom activation - this should be fixed
+
 namespace arming {
 
+    //defining variables for first timer (timer safety for switch)
     volatile bool timeKeeper = 0;
     hw_timer_t *timer = NULL;
     portMUX_TYPE timerMux = portMUX_INITIALIZER_UNLOCKED;
@@ -17,6 +20,18 @@ namespace arming {
         portENTER_CRITICAL_ISR(&timerMux);
         timeKeeper = 1;
         portEXIT_CRITICAL_ISR(&timerMux);
+    }
+
+    //defining variables for second timer (Nihrom timer)
+    volatile bool timeKeeperNihrom = 0;
+    hw_timer_t *timerNihrom = NULL;
+    portMUX_TYPE timerNihromMux = portMUX_INITIALIZER_UNLOCKED;
+
+    void IRAM_ATTR onNihromTimer()
+    {
+        portENTER_CRITICAL_ISR(&timerNihromMux);
+        timeKeeperNihrom = 1;
+        portEXIT_CRITICAL_ISR(&timerNihromMux);
     }
 
     //pin definitions
@@ -69,7 +84,7 @@ namespace arming {
         pinMode(out, OUTPUT); //? buzzer
         pinMode(EEPROMclear, INPUT_PULLDOWN);
 
-        //sak timeri
+        //start first timer
         timer = timerBegin(0, 80, true);
         timerAttachInterrupt(timer, &onTimer, true);
         timerAlarmWrite(timer, 5000000, false); //! 5sek - safety Note: code goes through all sensor initializations and calibration while timer is going, should create seperate timer start function
@@ -199,31 +214,24 @@ namespace arming {
         digitalWrite(nihrom2, LOW);
     }
 
-    void nihromActivate()
+    void nihromActivateFirst()
     {
-        digitalWrite(nihrom, HIGH); //pirmais nihroms //? commented out for testing   
         Serial.println("First Nihrom activated");
-        buzzer::buzz(3400);             
-                                    //!POSSIBLE PROBLEM WITH TIMER INTERRUPT - SHOULD USE DIFFERENT INTERRUPT HANDLING FUNCTION (otherwise when checking timeKeeper it's already 1)
-        timer = timerBegin(0, 80, true);
-        timerAttachInterrupt(timer, &onTimer, true);
-        timerAlarmWrite(timer, 1000000, false); //1sek
-        timerAlarmEnable(timer);
+        digitalWrite(nihrom, HIGH); //pirmais nihroms //? commented out for testing   
+        buzzer::buzz(3400);   
+        timerNihrom = timerBegin(1, 80, true);
+        timerAttachInterrupt(timerNihrom, &onNihromTimer, true);
+        timerAlarmWrite(timerNihrom, 1000000, false); //1sek
+        timerAlarmEnable(timerNihrom);
+    }
 
-        //*testing
-        delay(200); 
-        buzzer::buzzEnd();
-        //*
-
-        if (timeKeeper)
+    void NihromActivateSecond()
+    {
+        if (timeKeeperNihrom)
         {
             Serial.println("Second Nihrom activated"); 
             digitalWrite(nihrom2, HIGH); //otrais nihroms //? commented out for testing
             buzzer::buzz(3400);
-            //*testing
-            delay(200); 
-            buzzer::buzzEnd();
-        //*
         }
     }
 
