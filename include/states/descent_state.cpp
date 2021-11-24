@@ -61,7 +61,7 @@ class DescentState : public State {
                 else if(!file_closed)
                 {
                     flash::closeFile(file); //closing flash file
-                    flash::readFlash("/test.txt"); //!testing
+                    //flash::readFlash("/test.txt"); //!testing
                     Serial.println("Flash data file closed");
                     file_closed = 1;
                 }  

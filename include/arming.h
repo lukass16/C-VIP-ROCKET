@@ -238,7 +238,7 @@ namespace arming
             {
                 digitalWrite(nihrom, HIGH);
                 firstNihromActive = 1;
-                buzzer::buzz(3400);
+                //buzzer::buzz(3400);
             }
             else
             {
@@ -267,7 +267,7 @@ namespace arming
                 {
                     digitalWrite(nihrom2, HIGH);
                     secondNihromActive = 1;
-                    buzzer::buzz(3400);
+                    //buzzer::buzz(3400);
                 }
                 else
                 {

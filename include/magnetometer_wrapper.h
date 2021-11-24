@@ -321,7 +321,7 @@ namespace magnetometer {
         }
         else
         {
-            return field_val <= 10;
+            return field_val <= 5;
         }
     }
 
