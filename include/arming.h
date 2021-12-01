@@ -137,7 +137,7 @@ namespace arming
             rawReadingLopy = ThirdSwitchReading;
         }
 
-        return rawReadingLopy / 602;
+        return rawReadingLopy / 602.0;
     }
 
     bool getParachuteBatteryStatus()
