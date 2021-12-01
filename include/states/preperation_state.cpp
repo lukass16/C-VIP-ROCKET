@@ -29,6 +29,7 @@ class PreperationState: public State {
             magnetometer::readMagnetometer();
             sens_data::MagenetometerData md = magnetometer::getMagnetometerState();
             s_data.setMagnetometerData(md);
+            //magnetometer::processApogee();
             // BAROMETER
             sens_data::BarometerData bd = barometer::getBarometerState();
             s_data.setBarometerData(bd);
@@ -53,7 +54,7 @@ class PreperationState: public State {
             flash::setup();
             //flash::readFlash("/test.txt"); //!testing
             gps::setup(9600);
-            barometer::setup();
+            barometer::setup(1);
             buzzer::buzzEnd(); //?end start signal
             magnetometer::setup();
             comms::setup(868E6);
@@ -85,6 +86,7 @@ class PreperationState: public State {
                 buzzer::signalCalibrationStart();
                 buzzer::signalCalibrationEnd();
             }
+            magnetometer::enableBuzzApogee();
 
             arming::secondSwitchStart = millis();
             while(!arming::armingSuccess() && !magnetometer::savedCorToEEPROM())

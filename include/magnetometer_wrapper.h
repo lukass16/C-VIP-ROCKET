@@ -69,7 +69,7 @@ namespace magnetometer {
     int countAcc = 0;
 
     //creating variables for apogee detection protection
-    bool armed = 0;
+    bool armed = 0, buzzApogee = 0;
 
     //creating a variable for timer detection of apogee
     volatile bool timerDetAp = 0;
@@ -460,11 +460,25 @@ namespace magnetometer {
         return MDat;
     }
 
+    void enableBuzzApogee()
+    {
+        buzzApogee = 1;
+    }
+
+    void disableBuzzApogee()
+    {
+        buzzApogee = 0;
+    }
+
     void processApogee()
     {
-        if (isApogee(cor_y))
+        if (cor_y <= 5 && buzzApogee)
         {
             buzzer::buzz(3400);
+        }
+        else if(buzzApogee)
+        {
+            buzzer::buzzEnd();
         }
     }
 
@@ -480,7 +494,6 @@ namespace magnetometer {
 
         getMagValues();
         getAccelValues();
-
         //processApogee();
     }
 
