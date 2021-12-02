@@ -69,6 +69,7 @@ namespace arming
     int SecondSwitchReading = 0;
     int ThirdSwitchReading = 0;
     int rawReadingLopy = 0;
+    float voltageLopy = 0;
 
     //variables for nihrom cycling
     int intervalNihrom = 500, iterationsNihrom = 10;
@@ -104,11 +105,11 @@ namespace arming
         //static int readings = 0;
         //readings++;
         rawReading = analogRead(ParachuteBattery1);
-        rawVoltage = (rawReading / 320.0);
+        voltage1 = (rawReading / 320.0);
         //sumVoltage1 += rawVoltage;
         //voltage1 = sumVoltage1/readings;
         //return voltage1;
-        return rawVoltage;
+        return voltage1;
     }
 
     float getBattery2Voltage()
@@ -116,11 +117,11 @@ namespace arming
         // static int readings = 0;
         // readings++;
         rawReading = analogRead(ParachuteBattery2);
-        rawVoltage = (rawReading / 320.0); //!fix int/int
+        voltage2 = (rawReading / 320.0); //!fix int/int
         // sumVoltage2 += rawVoltage;
         // voltage2 = sumVoltage2/readings;
         // return voltage2;
-        return rawVoltage;
+        return voltage2;
     }
 
     float getLopyBatteryVoltage()
@@ -137,12 +138,13 @@ namespace arming
             rawReadingLopy = ThirdSwitchReading;
         }
 
-        return rawReadingLopy / 602.0;
+        voltageLopy = rawReadingLopy / 602.0;
+        return voltageLopy;
     }
 
     bool getParachuteBatteryStatus()
     {
-        if (voltage1 > 8.1 && voltage2 > 8.1)
+        if (voltage1 > 8.1 && voltage2 > 8.1 && voltageLopy > 4.1)
         {
             return 1;
         }
