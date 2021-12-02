@@ -69,7 +69,7 @@ namespace magnetometer {
     int countAcc = 0;
 
     //creating variables for apogee detection protection
-    bool armed = 0, buzzApogee = 0;
+    bool buzzApogee = 0;
 
     //creating a variable for timer detection of apogee
     volatile bool timerDetAp = 0;
@@ -87,6 +87,25 @@ namespace magnetometer {
         //since the variable is shared with the main loop it will be modified inside a critical section, declared with the portENTER_CRITICAL_ISR and portEXIT_CRITICAL_ISR macros
         portENTER_CRITICAL_ISR(&timerMux);
         timerDetAp = 1;
+        portEXIT_CRITICAL_ISR(&timerMux);
+    }
+
+    //creating a variable for timer Lockout
+    volatile bool armed = 0;
+
+    //creating a pointer to a variable of type hw_timer_t
+    hw_timer_t *timerLockout = NULL;
+
+    //declaring a variable of type portMUX_TYPE, which will be used to take care of the synchronization between the main loop and the ISR, when modifying a shared variable
+    portMUX_TYPE timerLockoutMux = portMUX_INITIALIZER_UNLOCKED;
+
+    //creating the interrupt handling function - should be as short as possible
+    //The interrupt handling routine should have the IRAM_ATTR attribute, in order for the compiler to place the code in IRAM
+    void IRAM_ATTR onLockoutTimer()
+    {
+        //since the variable is shared with the main loop it will be modified inside a critical section, declared with the portENTER_CRITICAL_ISR and portEXIT_CRITICAL_ISR macros
+        portENTER_CRITICAL_ISR(&timerMux);
+        armed = 1;
         portEXIT_CRITICAL_ISR(&timerMux);
     }
 
@@ -120,6 +139,23 @@ namespace magnetometer {
         timerAlarmEnable(timer);
 
         Serial.println("Timer enabled");
+    }
+
+    void startLockoutTimer(int timerLength)
+    {
+        //initializing timer - setting the number of the timer, the value of the prescaler and stating that the counter should count up (true)
+        timerLockout = timerBegin(2, 80, true);
+
+        //binding the timer to a handling function
+        timerAttachInterrupt(timerLockout, &onLockoutTimer, true);
+
+        //specifying the counter value in which the timer interrupt will be generated and indicating that the timer should not automatically reload (false) upon generating the interrupt
+        timerAlarmWrite(timerLockout, timerLength, false);
+
+        //enabling the timer
+        timerAlarmEnable(timerLockout);
+
+        Serial.println("Lockout timer started");
     }
 
     bool timerDetectApogee()
@@ -482,9 +518,16 @@ namespace magnetometer {
         }
     }
 
-    void arm()
+    void arm(bool lockout = false)
     {
-        armed = 1;
+        if(lockout = true)
+        {
+            startLockoutTimer(5000000);
+        }
+        else
+        {
+            armed = 1;
+        }
     }
 
     void readMagnetometer()
