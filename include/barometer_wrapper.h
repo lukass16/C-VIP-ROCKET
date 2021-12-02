@@ -5,7 +5,7 @@
 Adafruit_BMP280 bmp; // I2C Interface
 
 namespace barometer {
-    const float SEA_LEVEL = 1019.66;
+    const float AVIATION_PRESSURE = 1013.5;
     float sea_level_read = 0;
     //defining necessary variables for vertical velocity calculation
     float h_now = 0, h_prev = 0, t_now = 0, t_prev = 0, dh = 0, dt = 0, vert_velocity = 0, vert_velocity_prev = 0;
@@ -33,7 +33,7 @@ namespace barometer {
         }
         else
         {
-            sea_level_read = SEA_LEVEL;
+            sea_level_read = AVIATION_PRESSURE;
         }
         Serial.println("Barometer ready! Sea level pressure: " + String(sea_level_read));
     }

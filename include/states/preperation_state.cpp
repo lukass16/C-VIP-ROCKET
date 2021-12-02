@@ -54,7 +54,7 @@ class PreperationState: public State {
             flash::setup();
             //flash::readFlash("/test.txt"); //!testing
             gps::setup(9600);
-            barometer::setup(1);
+            barometer::setup();
             buzzer::buzzEnd(); //?end start signal
             magnetometer::setup();
             comms::setup(868E6);
