@@ -69,7 +69,7 @@ namespace magnetometer {
     int countAcc = 0;
 
     //creating variables for apogee detection protection
-    bool buzzApogee = 0;
+    bool buzzApogee = 0, buzzApogeeOn = 0;
 
     //creating a variable for timer detection of apogee
     volatile bool timerDetAp = 0;
@@ -510,11 +510,17 @@ namespace magnetometer {
     {
         if (cor_y <= 5 && buzzApogee)
         {
-            buzzer::buzz(3400);
+            if(!buzzApogeeOn)
+            {
+                buzzer::buzz(3400);
+                buzzApogeeOn = 1;
+            }
+            
         }
         else if(buzzApogee)
         {
             buzzer::buzzEnd();
+            buzzApogeeOn = 0;
         }
     }
 

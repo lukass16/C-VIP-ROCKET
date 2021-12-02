@@ -29,7 +29,7 @@ class PreperationState: public State {
             magnetometer::readMagnetometer();
             sens_data::MagenetometerData md = magnetometer::getMagnetometerState();
             s_data.setMagnetometerData(md);
-            //magnetometer::processApogee();
+            magnetometer::processApogee();
             // BAROMETER
             sens_data::BarometerData bd = barometer::getBarometerState();
             s_data.setBarometerData(bd);
