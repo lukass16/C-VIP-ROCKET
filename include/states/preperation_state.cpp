@@ -17,7 +17,6 @@ class PreperationState: public State {
         sens_data::GpsData gd;
         void extractData() {
             static int executions = 0;
-
             // GPS
             gps::readGps();
             if (gps::hasData)
@@ -49,13 +48,10 @@ class PreperationState: public State {
             buzzer::setup();
             buzzer::signalStart();
             arming::setup();
-
             Wire.begin(12, 13);
             flash::setup();
-            //flash::readFlash("/test.txt"); //!testing
-            gps::setup(9600);
             barometer::setup();
-            buzzer::buzzEnd(); //?end start signal
+            buzzer::buzzEnd(); //end start signal
             magnetometer::setup();
             comms::setup(868E6);
 
@@ -70,7 +66,7 @@ class PreperationState: public State {
             if(magnetometer::hasBeenLaunch())
             {
                 magnetometer::arm();
-                this->_context->RequestNextPhase(); //! Transition to flight state
+                this->_context->RequestNextPhase(); //Transition to flight state
                 this->_context->Start();
             }
 
@@ -80,13 +76,8 @@ class PreperationState: public State {
                 magnetometer::calibrate();
                 buzzer::signalCalibrationEnd();
             }
-            else
-            {
-                Serial.println("Calibration skipped - EEPROM shows as calibrated");
-                buzzer::signalCalibrationStart();
-                buzzer::signalCalibrationEnd();
-            }
-            magnetometer::enableBuzzApogee();
+            else {buzzer::signalCalibrationSkip();}
+            magnetometer::enableBuzzApogee(); //allows processApogee() to buzz when apogee is detected
 
             arming::secondSwitchStart = millis();
             while(!arming::armingSuccess() && !magnetometer::savedCorToEEPROM())

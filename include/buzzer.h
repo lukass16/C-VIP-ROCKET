@@ -68,6 +68,13 @@ namespace buzzer
         buzzer::buzzEnd();
     }
 
+    void signalCalibrationSkip()
+    {
+        Serial.println("Calibration skipped - EEPROM shows as calibrated");
+        signalCalibrationStart();
+        signalCalibrationEnd();
+    }
+
     void signalSecondSwitch()
     {
         buzzer::buzz(1080);
