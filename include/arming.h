@@ -202,6 +202,17 @@ namespace arming
         }
     }
 
+    void reportFirstSwitch()
+    {
+        if(!arming::checkFirstSwitch() && !arming::firstSwitchHasBeen)
+        {
+            buzzer::buzz(1080);
+            delay(1000);
+            buzzer::buzzEnd();
+            arming::firstSwitchHasBeen = 1;
+        }
+    }
+
     bool clearEEPROM()
     {
         if (digitalRead(EEPROMclear) == HIGH)

@@ -60,7 +60,7 @@ class PreperationState: public State {
                 magnetometer::clearEEPROM();
                 flash::unlock();
             }
-            if(!flash::locked()){flash::deleteFile("/test.txt");} //if file is done writing to don't rewrite it
+            if(!flash::locked()){flash::deleteFile("/test.txt");} //if file is not locked - clear it
             magnetometer::getCorEEPROM();
 
             if(magnetometer::hasBeenLaunch())
@@ -69,7 +69,8 @@ class PreperationState: public State {
                 this->_context->RequestNextPhase(); //Transition to flight state
                 this->_context->Start();
             }
-
+            
+            //Check whether the magnetometer has been calibrated, if not - calibrate it
             if(!magnetometer::savedCorToEEPROM())
             {
                 buzzer::signalCalibrationStart();
@@ -77,19 +78,14 @@ class PreperationState: public State {
                 buzzer::signalCalibrationEnd();
             }
             else {buzzer::signalCalibrationSkip();}
+            
             magnetometer::enableBuzzApogee(); //allows processApogee() to buzz when apogee is detected
 
             arming::secondSwitchStart = millis();
             while(!arming::armingSuccess() && !magnetometer::savedCorToEEPROM())
             {
-                extractData(); //give Data to LoRa for sending and print necessary data in Serial
-                if(!arming::checkFirstSwitch() && !arming::firstSwitchHasBeen)
-                {
-                    buzzer::buzz(1080);
-                    delay(1000);
-                    buzzer::buzzEnd();
-                    arming::firstSwitchHasBeen = 1;
-                }
+                extractData(); //report back state of flight computer
+                arming::reportFirstSwitch(); //signal if first switch has been pulled
                 if(arming::checkSecondSwitch() && !arming::timeKeeper)
                 {                                                                   
                     arming::fail = 1;                                                          
