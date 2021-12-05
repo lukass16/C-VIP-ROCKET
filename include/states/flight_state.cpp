@@ -44,15 +44,18 @@ class FlightState : public State {
             Serial.println("FLIGHT STATE");
             File file = flash::openFile(); //opening file for writing during flight
             bool start_writing = 0;
+
             if(magnetometer::hasBeenLaunch())
             {
                 start_writing = 1;
+                magnetometer::startApogeeTimer(14000000); //last ditch effort after restart - if magnetometer fails the timer will deploy
+                timerEnabled = 1;
             }
             
             while (!isApogee())
             {
                 buzzer::signalFlight();
-                //While apogee isn't reached and the timer isn't yet enabled the rocket checks for launch to enable the timer - the checking of launch has no other functionality
+                //While apogee isn't reached and the timer isn't yet enabled the rocket checks for launch to enable the timer
                 if (!timerEnabled)
                 {
                     if (magnetometer::launch())  //checks if rocket has been launched
