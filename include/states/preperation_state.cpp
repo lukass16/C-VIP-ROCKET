@@ -7,7 +7,6 @@
 #include "buzzer.h"
 #include "core/core.cpp"
 #include "flight_state.cpp"
-#include "test_state.cpp"
 #include "arming.h"
 #include "flash.h"
 #include "EEPROM.h"
@@ -33,7 +32,7 @@ class PreperationState: public State {
             sens_data::BarometerData bd = barometer::getBarometerState();
             s_data.setBarometerData(bd);
 
-            if(executions % 700 == 0)
+            if(executions % 700 == 0) //happens every 700th loop - corresponds to about once per every 2 seconds
             {
                 //Print necessary info during preperation state
                 Serial.print("FCB: " + String(arming::getLopyBatteryVoltage()) + "V\tPB 1: " + String(arming::getBattery1Voltage()) + "V\tPB 2: " + String(arming::getBattery2Voltage()) + "V");
@@ -89,18 +88,18 @@ class PreperationState: public State {
                 if(arming::checkSecondSwitch() && arming::checkThirdSwitch()) //ja ir izvilkts slēdzis 
                 {
                     buzzer::signalSecondSwitch();
-                    if(millis() - arming::secondSwitchStart > 10000) //un ja pagājis vairāk kā noteiktais intervāls
+                    if(millis() - arming::secondSwitchStart > 10000) //if 10 seconds have passed
                     {
                         arming::AlreadyCalibrated = 1;
                         magnetometer::saveCorToEEPROM();
                         magnetometer::setAsCalibrated();
-                        Serial.println("EEPROM calibration values saved");
                         buzzer::signalSavedValues();
+                        Serial.println("EEPROM calibration values saved");
                     } 
                 }
                 else
                 {
-                    arming::secondSwitchStart = millis(); //resetto izvilkšanas sākuma laiku uz pašreizējo laiku
+                    arming::secondSwitchStart = millis(); //resets pulled start time to current time
                 }
             }
             magnetometer::getCorEEPROM();
@@ -115,7 +114,6 @@ class PreperationState: public State {
         }
 
         void HandleNextPhase() override {
-            Serial.println("proof of concept --- NEXT STATE for PREP");
             this->_context->TransitionTo(new FlightState);
         }
 };
