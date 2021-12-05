@@ -166,6 +166,7 @@ namespace buzzer
         buzzer::buzz(900);
         delay(500);
         buzzer::buzzEnd();
+        delay(2000); //delay to differentiate signals
     }
 
     void test()
