@@ -6,12 +6,10 @@
 
 #define EEPROM_SIZE 255
 
-//! the same handling function assesses the arming timer of the switch being pulled too fast and the second nihrom activation - this should be fixed
-
 namespace arming
 {
 
-    //defining variables for first timer (timer safety for switch)
+    //defining variables for first timer (timer safety for third switch)
     volatile bool timeKeeper = 0;
     hw_timer_t *timer = NULL;
     portMUX_TYPE timerMux = portMUX_INITIALIZER_UNLOCKED;
@@ -45,7 +43,6 @@ namespace arming
     int SecondSwitch = 38; //p16 INPUT
     int ThirdSwitch = 37;  //p15 INPUT
 
-    int out = 26;        //p21 lampiņa/buzzer
     int EEPROMclear = 2; //p8 INPUT
 
     bool fail = 0;
@@ -57,11 +54,8 @@ namespace arming
     //variables for Parachute battery voltage calculation
     float rawVoltage = 0;
     int rawReading = 0;
-    float sumVoltage1 = 0;
-    float sumVoltage2 = 0;
     float voltage1 = 0;
     float voltage2 = 0;
-    float filteredVoltage = 0;
 
     //variables for Lopy battery voltage calculation
     int FirstSwitchReading = 0;
@@ -86,7 +80,6 @@ namespace arming
         pinMode(SecondSwitch, INPUT);
         pinMode(FirstSwitch, INPUT);
 
-        pinMode(out, OUTPUT); //? buzzer
         pinMode(EEPROMclear, INPUT_PULLDOWN);
 
         //EEPROM setup
@@ -113,7 +106,7 @@ namespace arming
     float getBattery2Voltage()
     {
         rawReading = analogRead(ParachuteBattery2);
-        voltage2 = (rawReading / 320.0); //!fix int/int
+        voltage2 = (rawReading / 320.0);
         return voltage2;
     }
 
@@ -185,7 +178,7 @@ namespace arming
 
     bool armingSuccess()
     {
-        if (AlreadyCalibrated == 1 && fail == 0)
+        if (AlreadyCalibrated == 1)
         {
             return 1;
         }

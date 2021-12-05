@@ -77,7 +77,7 @@ namespace barometer {
         // Serial.println(" hPa");
 
         Serial.print("Approx altitude = ");
-        Serial.print(bmp.readAltitude(sea_level_read)); //The "1019.66" is the pressure(hPa) at sea level in my place
+        Serial.print(bmp.readAltitude(sea_level_read));
         Serial.println(" m");
         Serial.println();
     }
