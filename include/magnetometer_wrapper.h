@@ -544,7 +544,6 @@ namespace magnetometer {
 
         getMagValues();
         getAccelValues();
-        //processApogee();
     }
 
 }
