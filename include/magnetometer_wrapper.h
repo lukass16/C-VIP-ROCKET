@@ -526,7 +526,7 @@ namespace magnetometer {
 
     void arm(bool lockout = false)
     {
-        if(lockout = true)
+        if(lockout)
         {
             startLockoutTimer(5000000);
         }

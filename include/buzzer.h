@@ -9,7 +9,7 @@ namespace buzzer
     int piezo_pin = 21;
 
     //variable for the structure of the third switch beeping
-    bool thirdSwitchBeep = false;
+    bool thirdSwitchBeep = false, flightBeep = false, descentBeep = false;
     unsigned long previousTime = 0, currentTime = 0;
 
     //declaring variables for PWM channel attributes
@@ -86,22 +86,42 @@ namespace buzzer
         buzzer::buzzEnd();
     }
 
-    void signalThirdSwitch()
+    void signalThirdSwitchLockout()
     {
-        int interval = 500; //interval time in milliseconds
+        int interval = 1000; //interval time in milliseconds
         currentTime = millis();
         if (currentTime - previousTime >= interval)
         {
             previousTime = currentTime; //save the last time that buzzer was toggled
             if (!thirdSwitchBeep)       //if not buzzing
             {
-                buzzer::buzz(3400);
+                buzzer::buzz(520);
                 thirdSwitchBeep = true;
             }
             else
             {
                 buzzer::buzzEnd();
                 thirdSwitchBeep = false;
+            }
+        }
+    }
+
+    void signalFlight()
+    {
+        int interval = 500; //interval time in milliseconds
+        currentTime = millis();
+        if (currentTime - previousTime >= interval)
+        {
+            previousTime = currentTime; //save the last time that buzzer was toggled
+            if (!flightBeep)       //if not buzzing
+            {
+                buzzer::buzz(3400);
+                flightBeep = true;
+            }
+            else
+            {
+                buzzer::buzzEnd();
+                flightBeep = false;
             }
         }
     }
@@ -113,15 +133,15 @@ namespace buzzer
         if (currentTime - previousTime >= interval)
         {
             previousTime = currentTime; //save the last time that buzzer was toggled
-            if (!thirdSwitchBeep)       //if not buzzing
+            if (!descentBeep)       //if not buzzing
             {
                 buzzer::buzz(2000);
-                thirdSwitchBeep = true;
+                descentBeep = true;
             }
             else
             {
                 buzzer::buzzEnd();
-                thirdSwitchBeep = false;
+                descentBeep = false;
             }
         }
     }

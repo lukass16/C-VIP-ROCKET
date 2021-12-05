@@ -45,9 +45,8 @@ namespace arming
     int SecondSwitch = 38; //p16 INPUT
     int ThirdSwitch = 37;  //p15 INPUT
 
-    const int LopyPower = 0; //!JĀDEFINĒ!
-    int out = 26;            //p21 lampiņa/buzzer
-    int EEPROMclear = 2;     //p8 INPUT
+    int out = 26;        //p21 lampiņa/buzzer
+    int EEPROMclear = 2; //p8 INPUT
 
     bool fail = 0;
     bool AlreadyCalibrated = 0;
@@ -75,6 +74,7 @@ namespace arming
     int intervalNihrom = 500, iterationsNihrom = 10;
     unsigned long previousTimeFirst = 0, currentTimeFirst = 0, previousTimeSecond = 0, currentTimeSecond = 0;
     bool firstNihromActive = 0, secondNihromActive = 0, firstNihromFirstActive = 1, secondNihromFirstActive = 1;
+
     void setup()
     {
         pinMode(nihrom, OUTPUT);           //1. nihroma
@@ -99,31 +99,21 @@ namespace arming
         //start third switch timer
         timer = timerBegin(0, 80, true);
         timerAttachInterrupt(timer, &onTimer, true);
-        timerAlarmWrite(timer, microseconds, false); 
+        timerAlarmWrite(timer, microseconds, false);
         timerAlarmEnable(timer);
     }
 
     float getBattery1Voltage()
     {
-        //static int readings = 0;
-        //readings++;
         rawReading = analogRead(ParachuteBattery1);
         voltage1 = (rawReading / 320.0);
-        //sumVoltage1 += rawVoltage;
-        //voltage1 = sumVoltage1/readings;
-        //return voltage1;
         return voltage1;
     }
 
     float getBattery2Voltage()
     {
-        // static int readings = 0;
-        // readings++;
         rawReading = analogRead(ParachuteBattery2);
         voltage2 = (rawReading / 320.0); //!fix int/int
-        // sumVoltage2 += rawVoltage;
-        // voltage2 = sumVoltage2/readings;
-        // return voltage2;
         return voltage2;
     }
 
@@ -207,7 +197,7 @@ namespace arming
 
     void reportFirstSwitch()
     {
-        if(!arming::checkFirstSwitch() && !arming::firstSwitchHasBeen)
+        if (!arming::checkFirstSwitch() && !arming::firstSwitchHasBeen)
         {
             buzzer::buzz(1080);
             delay(1000);
@@ -218,18 +208,25 @@ namespace arming
 
     bool thirdSwitchTooFast()
     {
-        if(!arming::fail)
+        if (!arming::fail)
         {
-            if(!arming::checkThirdSwitch() && !arming::timeKeeper)
-            {                                                                   
-                arming::fail = 1; 
-                buzzer::buzz(2000);                                                         
-                Serial.println("Transition to flight state failed, affirmed too fast!"); 
-                return 1;
+            if (!arming::timeKeeper)
+            {
+                buzzer::signalThirdSwitchLockout();
+                if (!arming::checkThirdSwitch())
+                {
+                    arming::fail = 1;
+                    buzzer::buzz(2000);
+                    Serial.println("Transition to flight state failed, affirmed too fast!");
+                    return 1;
+                }
             }
             return 0;
         }
-        else {return 1;}
+        else
+        {
+            return 1;
+        }
     }
 
     bool clearEEPROM()
@@ -295,7 +292,7 @@ namespace arming
             if (currentTimeSecond - previousTimeSecond >= intervalNihrom) //if enough time has passed
             {
                 previousTimeSecond = currentTimeSecond; //save the last time that the nihrom2 was toggled
-                if (!secondNihromActive)               //if not active
+                if (!secondNihromActive)                //if not active
                 {
                     digitalWrite(nihrom2, HIGH);
                     secondNihromActive = 1;

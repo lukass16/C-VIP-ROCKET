@@ -49,13 +49,9 @@ class FlightState : public State {
                 start_writing = 1;
             }
             
-            //!There is danger that if launch was detected previously the rocket goes
-            //!straight to arming and setting apogee timers, so if launch is detected and during testing 
-            //!the launchDetected EEPROM value is not changed it could lead to an inadvertent triggering of the mechanism - should test whether if arming pin is inserted this can happen
-
             while (!isApogee())
             {
-                buzzer::signalThirdSwitch();
+                buzzer::signalFlight();
                 //While apogee isn't reached and the timer isn't yet enabled the rocket checks for launch to enable the timer - the checking of launch has no other functionality
                 if (!timerEnabled)
                 {
