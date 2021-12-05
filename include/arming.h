@@ -89,15 +89,18 @@ namespace arming
         pinMode(out, OUTPUT); //? buzzer
         pinMode(EEPROMclear, INPUT_PULLDOWN);
 
-        //start first timer
-        timer = timerBegin(0, 80, true);
-        timerAttachInterrupt(timer, &onTimer, true);
-        timerAlarmWrite(timer, 5000000, false); //! 5sek - safety Note: code goes through all sensor initializations and calibration while timer is going, should create seperate timer start function
-        timerAlarmEnable(timer);
-
         //EEPROM setup
         EEPROM.begin(EEPROM_SIZE);
         Serial.println("Arming setup complete!");
+    }
+
+    void startThirdSwitchTimer(int microseconds = 5000000)
+    {
+        //start third switch timer
+        timer = timerBegin(0, 80, true);
+        timerAttachInterrupt(timer, &onTimer, true);
+        timerAlarmWrite(timer, microseconds, false); 
+        timerAlarmEnable(timer);
     }
 
     float getBattery1Voltage()
@@ -178,7 +181,7 @@ namespace arming
         }
     }
 
-    bool checkThirdSwitch() //!changed
+    bool checkThirdSwitch()
     {
         if (analogRead(ThirdSwitch) > 1000)
         {
@@ -211,6 +214,22 @@ namespace arming
             buzzer::buzzEnd();
             arming::firstSwitchHasBeen = 1;
         }
+    }
+
+    bool thirdSwitchTooFast()
+    {
+        if(!arming::fail)
+        {
+            if(!arming::checkThirdSwitch() && !arming::timeKeeper)
+            {                                                                   
+                arming::fail = 1; 
+                buzzer::buzz(2000);                                                         
+                Serial.println("Transition to flight state failed, affirmed too fast!"); 
+                return 1;
+            }
+            return 0;
+        }
+        else {return 1;}
     }
 
     bool clearEEPROM()

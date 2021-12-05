@@ -86,12 +86,7 @@ class PreperationState: public State {
             {
                 extractData(); //report back state of flight computer
                 arming::reportFirstSwitch(); //signal if first switch has been pulled
-                if(arming::checkSecondSwitch() && !arming::timeKeeper)
-                {                                                                   
-                    arming::fail = 1;                                                          
-                    Serial.println("Calibration failed, affirmed too fast!"); 
-                } 
-                else if(arming::checkSecondSwitch() && arming::checkThirdSwitch()) //ja ir izvilkts slēdzis 
+                if(arming::checkSecondSwitch() && arming::checkThirdSwitch()) //ja ir izvilkts slēdzis 
                 {
                     buzzer::signalSecondSwitch();
                     if(millis() - arming::secondSwitchStart > 10000) //un ja pagājis vairāk kā noteiktais intervāls
@@ -111,11 +106,12 @@ class PreperationState: public State {
             magnetometer::getCorEEPROM();
             magnetometer::displayCor();
 
-            //permanent loop while not pulled third switch
-            while(!arming::checkSecondSwitch() || arming::checkThirdSwitch()) {extractData();}
+            //permanent loop while not pulled third switch and second switch, and if third switch pulled too fast
+            arming::startThirdSwitchTimer();
+            while(!arming::checkSecondSwitch() || arming::checkThirdSwitch() || arming::thirdSwitchTooFast()) {extractData();}
             this->_context->RequestNextPhase();
             this->_context->Start();
-           
+
         }
 
         void HandleNextPhase() override {
