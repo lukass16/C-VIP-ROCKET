@@ -68,8 +68,9 @@ namespace magnetometer {
     float detAcc = 1;
     int countAcc = 0;
 
-    //creating variables for apogee detection protection
+    //creating variables for apogee detection and protection
     bool buzzApogee = 0, buzzApogeeOn = 0;
+    float apogeeDetVal = 10;
 
     //creating a variable for timer detection of apogee
     volatile bool timerDetAp = 0;
@@ -358,7 +359,7 @@ namespace magnetometer {
         }
         else
         {
-            return field_val <= 5;
+            return field_val <= apogeeDetVal;
         }
     }
 
@@ -509,7 +510,7 @@ namespace magnetometer {
 
     void processApogee()
     {
-        if (cor_y <= 5 && buzzApogee)
+        if (cor_y <= apogeeDetVal && buzzApogee)
         {
             if(!buzzApogeeOn)
             {
