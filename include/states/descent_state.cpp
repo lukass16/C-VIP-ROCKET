@@ -26,7 +26,7 @@ class DescentState : public State {
 
             while (true)
             {
-                //activate nihroms if need be
+                //activate nihroms
                 arming::nihromActivateFirst();
                 arming::nihromActivateSecond();
                 

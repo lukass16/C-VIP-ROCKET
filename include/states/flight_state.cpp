@@ -93,13 +93,13 @@ class FlightState : public State {
 
                 if(start_writing)
                 {
-                    flash_counter = flash::writeData(file, gd, md, bd, btd); //writing data to flash memory    
+                    flash_counter = flash::writeData(file, gd, md, bd, btd); //writing data to flash memory
+                    if(flash_counter % 100 == 1){flash::closeFile(file);file=flash::openFile();} //close and open the file every 100th reading
                 }
                 
             }
             Serial.println("APOGEE DETECTED !!!");
             arming::nihromActivateFirst();
-
             flash::closeFile(file); //closing flash file
 
             this->_context->RequestNextPhase();
