@@ -68,7 +68,7 @@ namespace buzzer
         buzzer::buzzEnd();
     }
 
-    void signalCalibrationSkip()
+    void signalCalibrationSkip() //change xd
     {
         Serial.println("Calibration skipped - EEPROM shows as calibrated");
         signalCalibrationStart();
@@ -161,11 +161,11 @@ namespace buzzer
     {
         buzzer::buzz(2000);
         delay(500);
-        buzzer::buzz(1080);
-        delay(500);
-        buzzer::buzz(900);
-        delay(500);
         buzzer::buzzEnd();
+        delay(500);
+        buzzer::buzz(2000);
+        delay(500);
+        buzzer::buzzEnd();        
         delay(2000); //delay to differentiate signals
     }
 

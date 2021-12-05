@@ -107,7 +107,7 @@ class PreperationState: public State {
 
             //permanent loop while not pulled third switch and second switch, and if third switch pulled too fast
             arming::startThirdSwitchTimer();
-            while(!arming::checkSecondSwitch() || arming::checkThirdSwitch() || arming::thirdSwitchTooFast()) {extractData();}
+            while(arming::thirdSwitchTooFast() || !arming::checkSecondSwitch() || arming::checkThirdSwitch()) {extractData();} //changed init
             this->_context->RequestNextPhase();
             this->_context->Start();
 
