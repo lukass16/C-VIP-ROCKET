@@ -157,6 +157,17 @@ namespace buzzer
         buzzer::buzzEnd();
     }
 
+    void signalEEPROMClear()
+    {
+        buzzer::buzz(2000);
+        delay(500);
+        buzzer::buzz(1080);
+        delay(500);
+        buzzer::buzz(900);
+        delay(500);
+        buzzer::buzzEnd();
+    }
+
     void test()
     {
         buzzer::buzzCustom(127, 200);

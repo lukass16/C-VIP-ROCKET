@@ -295,6 +295,7 @@ namespace magnetometer {
 
     void clearEEPROM()
     {
+        buzzer::signalEEPROMClear();
         for (int i = 0; i <= 36; i = i + 4)
         {
             EEPROM.writeFloat(i, 0.0);
