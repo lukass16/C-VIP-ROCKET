@@ -87,7 +87,7 @@ namespace arming
         Serial.println("Arming setup complete!");
     }
 
-    void startThirdSwitchTimer(int microseconds = 5000000)
+    void startThirdSwitchTimer(int microseconds = 5000000) //safety timer for when third switch pulled too fast
     {
         //start third switch timer
         timer = timerBegin(0, 80, true);

@@ -103,9 +103,8 @@ class PreperationState: public State {
             magnetometer::getCorEEPROM();
             magnetometer::displayCor();
 
-            //permanent loop while not pulled third switch and second switch, and if third switch pulled too fast
-            arming::startThirdSwitchTimer();
-            while(arming::thirdSwitchTooFast() || !arming::checkSecondSwitch() || arming::checkThirdSwitch()) {extractData();} //changed init
+            //permanent loop while not pulled third switch and second switch
+            while(!arming::checkSecondSwitch() || arming::checkThirdSwitch()) {extractData();} //changed init
             this->_context->RequestNextPhase();
             this->_context->Start();
 
