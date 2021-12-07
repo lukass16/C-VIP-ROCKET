@@ -77,8 +77,6 @@ class PreperationState: public State {
                 buzzer::signalCalibrationEnd();
             }
             else {buzzer::signalCalibrationSkip();}
-            
-            magnetometer::enableBuzzApogee(); //allows processApogee() to buzz when apogee is detected
 
             arming::secondSwitchStart = millis();
             while(!arming::armingSuccess() && !magnetometer::savedCorToEEPROM())

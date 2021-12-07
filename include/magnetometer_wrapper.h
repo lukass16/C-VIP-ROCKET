@@ -4,6 +4,7 @@
 #include "MPU9250.h"
 #include "buzzer.h"
 #include "sensor_data.h"
+#include "arming.h"
 #include "EEPROM.h"
 
 //note: this wrapper also includes the EEPROM functionality
@@ -510,7 +511,7 @@ namespace magnetometer {
 
     void processApogee()
     {
-        if (cor_y <= apogeeDetVal && buzzApogee)
+        if (cor_y <= apogeeDetVal && arming::checkSecondSwitch())
         {
             if(!buzzApogeeOn)
             {
@@ -519,7 +520,7 @@ namespace magnetometer {
             }
             
         }
-        else if(buzzApogee)
+        else if(buzzApogeeOn)
         {
             buzzer::buzzEnd();
             buzzApogeeOn = 0;
