@@ -160,11 +160,11 @@ namespace buzzer
     void signalEEPROMClear()
     {
         buzzer::buzz(2000);
-        delay(500);
+        delay(200);
         buzzer::buzzEnd();
-        delay(500);
+        delay(200);
         buzzer::buzz(2000);
-        delay(500);
+        delay(200);
         buzzer::buzzEnd();        
         delay(2000); //delay to differentiate signals
     }
