@@ -18,7 +18,7 @@ class DescentState : public State {
             Serial.println("DESCENT STATE");
 
             unsigned long start_time_descent = millis();
-            int descent_write_time = 10000; //ms
+            int descent_write_time = 180000; //ms
             int flash_counter = 0;
             bool file_closed = 0;
             sens_data::GpsData gd;

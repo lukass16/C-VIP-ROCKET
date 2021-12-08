@@ -130,7 +130,7 @@ namespace arming
 
     bool getParachuteBatteryStatus()
     {
-        if (voltage1 > 8.1 && voltage2 > 8.1 && voltageLopy > 4.1)
+        if (voltage1 > 8.1 && voltage2 > 8.1 && voltageLopy > 4.05)
         {
             return 1;
         }
