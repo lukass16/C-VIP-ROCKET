@@ -531,7 +531,7 @@ namespace magnetometer {
     {
         if(lockout)
         {
-            startLockoutTimer(5000000);
+            startLockoutTimer(2000000);
         }
         else
         {
