@@ -55,8 +55,9 @@ class DescentState : public State {
 
                 if(millis() - start_time_descent < descent_write_time)
                 {
-                    flash_counter = flash::writeData(file, gd, md, bd, btd); //writing data to flash memory
-                    if(flash_counter % 100 == 1){flash::closeFile(file);file=flash::openFile();} //close and open the file every 100th reading
+                    if(flash_counter % 2 == 0){flash::writeData(file, gd, md, bd, btd);} //writing data to flash memory every second iteration
+                    flash_counter++;
+                    if(flash_counter % 100 == 1){flash::closeFile(file);file=flash::openFile();} //close and open the file every 100th iteration
                 }
                 else if(!file_closed)
                 {
