@@ -53,7 +53,7 @@ namespace arming
 
     //variables for Parachute battery voltage calculation
     float rawVoltage = 0;
-    int rawReading = 0;
+    int rawReading1 = 0, rawReading2 = 0;
     float voltage1 = 0;
     float voltage2 = 0;
 
@@ -98,15 +98,15 @@ namespace arming
 
     float getBattery1Voltage()
     {
-        rawReading = analogRead(ParachuteBattery1);
-        voltage1 = (rawReading / 320.0);
+        rawReading1 = analogRead(ParachuteBattery1);
+        voltage1 = (rawReading1 / 320.0);
         return voltage1;
     }
 
     float getBattery2Voltage()
     {
-        rawReading = analogRead(ParachuteBattery2);
-        voltage2 = (rawReading / 320.0);
+        rawReading2 = analogRead(ParachuteBattery2);
+        voltage2 = (rawReading2 / 320.0);
         return voltage2;
     }
 
