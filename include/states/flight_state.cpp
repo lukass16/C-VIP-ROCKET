@@ -48,7 +48,7 @@ class FlightState : public State {
             if(magnetometer::hasBeenLaunch())
             {
                 start_writing = 1;
-                magnetometer::startApogeeTimer(14000000); //last ditch effort after restart - if magnetometer fails the timer will deploy
+                magnetometer::startApogeeTimer(15500000); //last ditch effort after restart - if magnetometer fails the timer will deploy
                 timerEnabled = 1;
             }
             
@@ -60,7 +60,7 @@ class FlightState : public State {
                 {
                     if (magnetometer::launch())  //checks if rocket has been launched
                     {
-                        magnetometer::startApogeeTimer(15500000); //code to start timer - prints TIMER ENABLED if timer enabled
+                        magnetometer::startApogeeTimer(15500000); //code to start timer - time passed in microseconds (15.5s) - prints Timer Enabled if timer enabled
                         magnetometer::arm(true); //magnetometer can detect apogee
                         buzzer::buzz(4000);
                         Serial.println("Launch detected!");

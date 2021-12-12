@@ -128,7 +128,7 @@ namespace arming
         return voltageLopy;
     }
 
-    bool getParachuteBatteryStatus()
+    bool getBatteryStatus()
     {
         if (voltage1 > 8.1 && voltage2 > 8.1 && voltageLopy > 4.05)
         {
@@ -260,7 +260,6 @@ namespace arming
             {
                 digitalWrite(nihrom, HIGH);
                 firstNihromActive = 1;
-                //buzzer::buzz(3400);
             }
             else
             {
@@ -289,7 +288,6 @@ namespace arming
                 {
                     digitalWrite(nihrom2, HIGH);
                     secondNihromActive = 1;
-                    //buzzer::buzz(3400);
                 }
                 else
                 {
@@ -304,7 +302,7 @@ namespace arming
     sens_data::BatteryData getBatteryState()
     {
         sens_data::BatteryData BDat;
-        BDat.bs = getParachuteBatteryStatus();
+        BDat.bs = getBatteryStatus();
         BDat.bat1 = getBattery1Voltage();
         BDat.bat2 = getBattery2Voltage();
         return BDat;

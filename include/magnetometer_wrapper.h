@@ -66,7 +66,7 @@ namespace magnetometer {
     float gyr_x = 0, gyr_y = 0, gyr_z = 0;
 
     //creating variables for timer and launch
-    float detAcc = 1;
+    float detAcc = 19.6; // m/s^2
     int countAcc = 0;
 
     //creating variables for apogee detection and protection
@@ -117,7 +117,7 @@ namespace magnetometer {
         {
             countAcc++;
         }
-        if (countAcc > 20) //!Changed for test - was 50
+        if (countAcc > 20)
         {
             Serial.println("Writing to EEPROM that launch detected");
             EEPROM.writeFloat(36, 1); //Adding that launch is detected
