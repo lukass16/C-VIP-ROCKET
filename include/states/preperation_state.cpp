@@ -37,6 +37,7 @@ class PreperationState: public State {
                 //Print necessary info during preperation state
                 Serial.print("FCB: " + String(arming::getLopyBatteryVoltage()) + "V\tPB 1: " + String(arming::getBattery1Voltage()) + "V\tPB 2: " + String(arming::getBattery2Voltage()) + "V");
                 Serial.println("\tGPS sats: " + String(gd.sats));
+                Serial.println("Paatrinajums: " + String(magnetometer::getAccY())); //!For acceleration test
             }
             executions++;
         }
