@@ -31,6 +31,9 @@ class PreperationState: public State {
             // BAROMETER
             sens_data::BarometerData bd = barometer::getBarometerState();
             s_data.setBarometerData(bd);
+            // BATTERIES
+            sens_data::BatteryData btd = arming::getBatteryState();
+            s_data.setBatteryData(btd);
 
             if(executions % 700 == 0) //happens every 700th loop - corresponds to about once per every 2 seconds
             {
