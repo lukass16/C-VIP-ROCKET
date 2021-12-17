@@ -36,7 +36,7 @@ namespace magnetometer {
     unsigned long start_time = 0;
 
     // declaring variable for the detectable interval since last change of max min value in milliseconds
-    int interval = 10000;
+    int interval = 15000;
 
     // declaring variables for offsets
     float offset_x = 1;
@@ -71,7 +71,7 @@ namespace magnetometer {
 
     //creating variables for apogee detection and protection
     bool buzzApogee = 0, buzzApogeeOn = 0;
-    float apogeeDetVal = 10;
+    float apogeeDetVal = 2;
 
     //creating a variable for timer detection of apogee
     volatile bool timerDetAp = 0;
