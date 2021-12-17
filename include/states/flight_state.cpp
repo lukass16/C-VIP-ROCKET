@@ -44,6 +44,7 @@ class FlightState : public State {
             Serial.println("FLIGHT STATE");
             File file = flash::openFile(); //opening file for writing during flight
             bool start_writing = 0;
+            buzzer::transitionToGeneratorMode();
 
             if(magnetometer::hasBeenLaunch())
             {

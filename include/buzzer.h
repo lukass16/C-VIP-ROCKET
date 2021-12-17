@@ -23,6 +23,12 @@ namespace buzzer
         Serial.println("Buzzer ready!");
     }
 
+    void transitionToGeneratorMode()
+    {
+        ledcDetachPin(piezo_pin);
+        pinMode(piezo_pin, OUTPUT);
+    }
+
     void setPiezoPin(u_int piezo_pin)
     {
         buzzer::piezo_pin = piezo_pin;
@@ -115,12 +121,12 @@ namespace buzzer
             previousTime = currentTime; //save the last time that buzzer was toggled
             if (!flightBeep)       //if not buzzing
             {
-                buzzer::buzz(3400);
+                digitalWrite(piezo_pin, HIGH);
                 flightBeep = true;
             }
             else
             {
-                buzzer::buzzEnd();
+                digitalWrite(piezo_pin, LOW);
                 flightBeep = false;
             }
         }
@@ -135,12 +141,12 @@ namespace buzzer
             previousTime = currentTime; //save the last time that buzzer was toggled
             if (!descentBeep)       //if not buzzing
             {
-                buzzer::buzz(2000);
+                digitalWrite(piezo_pin, HIGH);
                 descentBeep = true;
             }
             else
             {
-                buzzer::buzzEnd();
+                digitalWrite(piezo_pin, LOW);
                 descentBeep = false;
             }
         }
