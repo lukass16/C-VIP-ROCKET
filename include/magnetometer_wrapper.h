@@ -36,7 +36,7 @@ namespace magnetometer {
     unsigned long start_time = 0;
 
     // declaring variable for the detectable interval since last change of max min value in milliseconds
-    int interval = 15000;
+    int interval = 15000; //magnetometer calibration interval
 
     // declaring variables for offsets
     float offset_x = 1;
@@ -66,12 +66,12 @@ namespace magnetometer {
     float gyr_x = 0, gyr_y = 0, gyr_z = 0;
 
     //creating variables for timer and launch
-    float detAcc = 4;//19.6; // m/s^2 //!Changed 
+    float detAcc = 19.6; //accelerometer launch detection threshold values [m/s^2]
     int countAcc = 0;
 
     //creating variables for apogee detection and protection
     bool buzzApogee = 0, buzzApogeeOn = 0;
-    float apogeeDetVal = 2;
+    float apogeeDetVal = -2; //magnetometer apogee detection threshold value
 
     //creating a variable for timer detection of apogee
     volatile bool timerDetAp = 0;
@@ -117,7 +117,7 @@ namespace magnetometer {
         {
             countAcc++;
         }
-        if (countAcc > 10) //!Changed from 20
+        if (countAcc > 10) //Launch count value for accelerometer
         {
             Serial.println("Writing to EEPROM that launch detected");
             EEPROM.writeFloat(36, 1); //Adding that launch is detected
@@ -531,7 +531,7 @@ namespace magnetometer {
     {
         if(lockout)
         {
-            startLockoutTimer(2000000);
+            startLockoutTimer(2500000); //magnetometer apogee lockout timer (timer length)
         }
         else
         {

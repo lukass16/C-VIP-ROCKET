@@ -130,7 +130,7 @@ namespace arming
 
     bool getBatteryStatus()
     {
-        if (voltage1 > 8.1 && voltage2 > 8.1 && voltageLopy > 4.05)
+        if (voltage1 > 8.1 && voltage2 > 8.1 && voltageLopy > 4.05) //threshold values for batteries
         {
             return 1;
         }
