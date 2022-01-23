@@ -6,6 +6,8 @@
 
 #define EEPROM_SIZE 255
 
+//gittest
+
 namespace arming
 {
 
